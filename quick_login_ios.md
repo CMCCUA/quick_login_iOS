@@ -1,4 +1,4 @@
-# 1. 开发环境配置a 
+# 1. 开发环境配置 
 
 sdk技术问题沟通QQ群：609994083</br>
 
@@ -443,10 +443,10 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 
 **请求参数**
 
-| 参数             | 类型                                    | 说明               | 是否必填 |
-| -------------- | ------------------------------------- | ---------------- | ---- |
-| customUIParams | NSDictionary                          | 用户编辑自定义UI属性      | 否    |
-| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义视图，仅支持授权页 | 否    |
+| 参数           | 类型                                  | 说明                                                         | 是否必填 |
+| -------------- | ------------------------------------- | ------------------------------------------------------------ | -------- |
+| customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                         | 否       |
+| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义视图，仅支持授权页。共支持三个开发者自定义的试图：customView1；customView2；customView3 | 否       |
 
 **响应参数**
 
@@ -460,34 +460,46 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 4. 开发者如果不设置自定义元素，将使用系统默认UI
 5. 短信验证码页面不支持开发者添加子视图。
 
-| 键名称                    | 使用说明                          | 值类型                | 是否可嵌套                | 所属层级 |
-| ---------------------- | ----------------------------- | ------------------ | -------------------- | :--- |
-| authPage               | 授权页面                          | NSDictionary       | 否                    | 1    |
-| SMSPage                | 短信验证码页面                       | NSDictionary       | 否                    | 1    |
-| privacyProperty        | 隐私条款区域                        | NSDictionary       | 否                    | 1    |
-| navBgColr              | 导航栏背景色                        | UIColor            | 否                    | 1    |
-| navLeftImg             | 导航栏返回图标                       | UIImage            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| navTitle               | 导航栏文字                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| navRightItem           | 导航栏右侧控件                       | UIButton           | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个）     | UIColor            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| pageBgImg              | 页面背景图片（背景颜色和图片属性只能同时存在一个）     | UIImage            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| logAbleButtonBgColr    | 登录按钮有效时颜色                     | UIColor            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| logDisableButtonBgColr | 登录按钮无效时颜色                     | UIColor            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| logButtonTextColr      | 登录按钮文字颜色                      | UIColor            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| logButtonText          | 登录按钮文字                        | NSString           | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| CMCCDescTextColr       | 移动认证文字描述颜色                    | UIColor            | 是，不嵌套时同时应用在授权和短验页    | 1/2  |
-| privacyTextColr        | 隐私条款文字颜色                      | UIColor            | 必须嵌套在privacyProperty | 2    |
-| privacyCheckBoxColr    | 隐私条款checkbox颜色，YES时为白色，NO时为黑色 | UIColor            | 必须嵌套在privacyProperty | 2    |
-| APPLogo                | 应用logo                        | UIImage            | 必须嵌套在authPage        | 2    |
-| APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示         | Bool               | 必须嵌套在authPage        | 2    |
-| numFieldBgColr         | 手机号码框背景颜色                     | UIColor            | 必须嵌套在authPage        | 2    |
-| numFieldTextColr       | 手机号码框文字颜色                     | UIColor            | 必须嵌套在authPage        | 2    |
-| switchAccHidden        | 隐藏“切换账号”，YES时隐藏，NO时显示         | Bool               | 必须嵌套在authPage        | 2    |
-| switchAccTextColr      | “切换账号”文字颜色                    | UIColor            | 必须嵌套在authPage        | 2    |
-| barHidden              | 隐藏页面分割线，YES时隐藏，NO时显示          | Bool               | 必须嵌套在authPage        | 2    |
-| SMSFieldBgColr         | 短信验证码输入框颜色                    | UIColor            | 必须嵌套在SMSPage         | 2    |
-| SMSGetCodeTextColr1    | “获取验证码”不可点击时文字颜色              | UIColor            | 必须嵌套在SMSPage         | 2    |
-| SMSGetCodeTextColr2    | “获取验证码”可点击时文字颜色               | UIColor            | 必须嵌套在SMSPage         | 2    |
+| 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                         | 所属层级 |
+| ---------------------- | -------------------------------------------------- | ------------------ | ---------------------------------- | :------- |
+| authPage               | 授权页面                                           | NSDictionary       | 否                                 | 1        |
+| SMSPage                | 短信验证码页面                                     | NSDictionary       | 否                                 | 1        |
+| privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
+| navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
+| navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| navTitle               | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logDisableButtonBgColr | 登录按钮无效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logButtonTextColr      | 登录按钮文字颜色                                   | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logButtonOffsetY       | 按钮Y轴偏移量调整                                  | NSNumber           | 必须嵌套在authPage                 | 2        |
+| CheckBoxImg            | 隐私条款中的checkbox选中状态时的图片               | UIImage            | 必须嵌套在privacyProperty          | 2        |
+| UnCheckedImage         | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
+| privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
+| UserServiceText        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
+| termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
+| privateTextOffsetY     | 隐私条款整体Y轴偏移量调整                          | NSNumber           | 必须嵌套在privacyProperty          | 2        |
+| privateTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
+| APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
+| APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
+| APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
+| numFieldBgColr         | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
+| numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
+| numFieldVisability     | 本机号码框隐藏开关                                 | Bool               | 必须嵌套在authPage                 | 2        |
+| switchAccHidden        | 隐藏“切换账号”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
+| switchAccTextColr      | “切换账号”文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
+| customView1Y           | 第一个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
+| customView1H           | 第一个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
+| customView2Y           | 第二个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
+| customView2H           | 第二个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
+| customView3Y           | 第三个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
+| customView3H           | 第三个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
+| SMSFieldBgColr         | 短信验证码输入框颜色                               | UIColor            | 必须嵌套在SMSPage                  | 2        |
+| SMSGetCodeTextColr1    | “获取验证码”不可点击时文字颜色                     | UIColor            | 必须嵌套在SMSPage                  | 2        |
+| SMSGetCodeTextColr2    | “获取验证码”可点击时文字颜色                       | UIColor            | 必须嵌套在SMSPage                  | 2        |
 
 
 
@@ -504,23 +516,44 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
       @"navRightItem":btn,
 //    @"pageBgColr":bgcolor, //背景颜色
       @"pageBgBgImg":bgImage, // 背景图片
-      @"CMCCDescTextColr":phoneColor, // 移动认证描述
       @"switchAccTextColr":switchTextColor, //切换账号文字颜色
       @"switchAccHidden":@(NO),// 隐藏切换账号开关
       @"logButtonText":loginButtonText, // 本机号码一键登录文字
       @"logButtonTextColr":loginButtonColor,
       @"numFieldTextColr":phoneTextColor, //本机号码
       @"privacyTextColr":protocolTextColor,// 协议字体颜色
-      @"barHidden" : @(YES),//logo下方分割线隐藏开关
       @"APPLogo":logo, // 传入替换的logo
       @"APPLogoHideen":@(NO), // 隐藏logo开关
       @"logAbleButtonBgColr":switchTextColor,//登录按钮背景色
       @"numFieldBgColr":switchTextColor,//本机号码框背景颜色
-     
+   	},
     @"privacyProperty" : @{
-      @"privacyCheckBoxColr" : @(YES), //勾选按钮颜色，白色
-                                              },      
-                                      } customViews:nil];
+     	@ "CheckBoxImg": [UIImage imageNamed: @ "qqq.png"], //隐私条款的checkbox
+		@ "UAUserServiceText": @ "开发者协议", //开发者的协议
+		@ "privacyCheckBoxColr": @(NO), //勾选按钮颜色
+		@ "privateTextColr": [UIColor orangeColor], // 协议字体颜色
+		@ "termTextColr": [UIColor redColor], //条款字体颜色
+		@ "userServiceTipColor": [UIColor blueColor],
+		@ "privateTextOffsetY": @0,
+     },
+}
+        customViews: ^ (NSDictionary * customAreaView) {
+		//此处将自定义的视图加进对应页面的View
+		if (customAreaView[@ "customView1"]) {
+			//authPage为授权页面的键名
+			UIView * authView = customAreaView[@ "customView1"];
+			authView.backgroundColor = [UIColor redColor];
+		}
+		if (customAreaView[@ "customView2"]) {
+			UIView * authView = customAreaView[@ "customView2"];
+			authView.backgroundColor = [UIColor greenColor];
+		}
+		if (customAreaView[@ "customView3"]) {
+			UIView * authView = customAreaView[@ "customView3"];
+			authView.backgroundColor = [UIColor blueColor];
+		}                              
+     }
+];
 
 ```
 
@@ -582,16 +615,17 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 **请求参数**
 
-| 参数           |   类型   |  约束  | 说明                                       |
-| :----------- | :----: | :--: | :--------------------------------------- |
-| version      | string |  必选  | 填2.0                                     |
-| msgid        | string |  必选  | 标识请求的随机数即可(1-36位)                        |
-| systemtime   | string |  必选  | 请求消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
-| strictcheck  | string |  必选  | 暂时填写"0"                                  |
-| appid        | string |  必选  | 业务在统一认证申请的应用id                           |
-| expandparams | string |  可选  | 扩展参数                                     |
-| sign         | string |  必选  | 签名，MD5（appid + version + msgid + systemtime + strictcheck + token + appkey)（注：“+”号为合并意思，不包含在被加密的字符串中），输出32位大写字母 |
-| token        | string |  必选  | 需要解析的凭证值。                                |
+| 参数                  |   类型   |  约束  | 说明                                       |
+| :------------------ | :----: | :--: | :--------------------------------------- |
+| version             | string |  必选  | 填2.0                                     |
+| msgid               | string |  必选  | 标识请求的随机数即可(1-36位)                        |
+| systemtime          | string |  必选  | 请求消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| strictcheck         | string |  必选  | 暂时填写"0"                                  |
+| appid               | string |  必选  | 业务在统一认证申请的应用id                           |
+| expandparams        | string |  可选  | 扩展参数                                     |
+| token               | string |  必选  | 需要解析的凭证值。                                |
+| sign                | string |  必选  | 当**encryptionalgorithm≠"RSA"**时，sign = MD5（appid + version + msgid + systemtime + strictcheck + token + appkey)（注：“+”号为合并意思，不包含在被加密的字符串中），输出32位大写字母；</br>当**encryptionalgorithm="RSA"**，业务端RSA私钥签名（appid+token）, 服务端使用业务端提供的公钥验证签名（公钥可以在开发者社区配置）。 |
+| encryptionalgorithm | string |  可选  | 开发者如果需要使用非对称加密算法时，填写“RSA”。（当该值不设置为“RSA”时，执行MD5签名校验） |
 
 </br>
 
@@ -627,7 +661,7 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 ```
 {
     inresponseto = 335e06a28f064b999d6a25e403991e4c;
-    msisdn = 147******10;
+    msisdn = 14700000000;
     resultCode = 103000;
     systemtime = 20180129112955477;
 }
@@ -939,7 +973,3 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 **4、关于Android 5.0操作系统切换数据通道问题**
 
 1. Android 5.x操作系统普遍存在wifi切数据网络通道延时问题，导致取号超时
-
-**5、关于非移动卡短信验证码问题**
-
-1. 目前由于电信联通未给统一认证开放短信验证端口，电信联通用户在使用短验时，验证码将从统一认证的移动号码池自动生成并下发到用户手机，用户将收到由中国移动手机号码（非短信端口）下发的短信验证码，用户可能会有疑虑，部分安全软件也可能会对短信进行拦截。开发者如果不希望联通电信用户通过此通道接收短信验证码，可以使用短信验证码登录开关屏蔽SDK自带的短信验证码改用开发者自己的短验功能，或者只针对移动用户使用SDK自带的短验功能，而联通和电信使用开发者自己的短验功能。
