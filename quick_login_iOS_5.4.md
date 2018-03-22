@@ -19,6 +19,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ![](image/19.png)
 
+
 由流程图可知，业务客户端集成SDK后只需要完成2步集成实现登录
 
     1.	调用登录接口获取token
@@ -129,10 +130,13 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **响应参数**
 
-| 参数          | 类型       | 说明                                       | 是否必填  |
-| ----------- | -------- | ---------------------------------------- | ----- |
-| resultCode  | NSString | 返回相应的结果码                                 | 是     |
-| desc       | NSString | 返回结果描述 | 成功时必填 
+| 参数         | 类型         | 说明       | 是否必填 |
+| ---------- | ---------- | -------- | ---- |
+| resultCode | NSUinteger | 返回相应的结果码 | 是    |
+| resultDesc       | NSString   | 结果码描述     | 是    |
+| securityphone | NSString | 手机掩码 | 成功时必填|
+| openId       | NSString   | 用户唯一标识符     | 成功时必填|
+| loginMethod | NSString | 方法描述 | 是   |
 
 </br>
 
@@ -152,10 +156,12 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ```
 {
-    desc = "预取号成功";
-    resultCode = 103000;
+"resultCode": "103000",//返回码
+"resultDesc": "预取号成功",//返回码描述
+"securityphone": "138****5380",//手机号掩码
+"openId": "9M7RaoZH1Z23Gw0ll_nuIE6D7qDjEmjnj_DXARN1JObalKy3Uygg",
+"loginMethod": "preGetPhonenumber"
 }
-
 ```
 
 
@@ -830,3 +836,4 @@ http://wap.cmpassport.com:8080/uniapi/uniTokenValidate
 | 105019     | 应用未授权                                 |
 | 105017     | 短信随机数校验非法失败                     |
 | 105016     | 达到使用次数限制                           |
+
