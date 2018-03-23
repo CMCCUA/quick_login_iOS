@@ -352,70 +352,7 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 }
 ```
 
-
-
-## 2.5. 短信验证码页面登录开关
-
-### 2.5.1. 方法描述
-
-**功能**
-
-该方法用于配置是否打开SDK自带的短信验证码服务，默认短信验证码服务是打开状态。SDK在两种情况会使用短信验证码登录：1、一键登录（网关取号）失败后，自动跳转到短验页面；2、在授权页面使用`切换账号`（见下图）后，用户可以选择使用非本机号码通过短信验证码登录账号。如果开发者需要自定义短信验证码页面，可将该方法的属性设置为YES。注：如果开发者没有把“`切换账号`”按钮隐藏，用户点击切换账号时，也可以跳转到SDK自带的短信验证码页面。
-
-![授权页](image\sms-1.png)
-
-</br>
-
-**原型**
-
-`TYRZUILogin -- setCustomSMS`
-
-```objective-c
-
-+ (void)enableCustomSMS:(BOOL)flag;
-
-```
-
-</br>
-
-### 2.5.2. 参数说明
-
-**请求参数**
-
-| 参数     | 类型   | 说明                                       | 是否必填   |
-| ------ | ---- | ---------------------------------------- | ------ |
-| enable | BOOL | NO时显式登录取号失败会跳转至短信验证码界面</br>YES时显式登录取号失败允许跳转到开发者自定的跳转页面，不会跳转到SDK自带的短信验证码界面</br> 默认值为NO | 是</br> |
-
-**响应参数**
-
-无
-
-</br>
-
-### 2.5.3. 示例
-
-**请求示例代码**
-
-```objective-c
-  [TYRZUILogin enableCustomSMS:NO];
-     __weak typeof(self) weakSelf = self;
-    [TYRZUILogin getTokenExpWithController:weakSelf
-                                  complete:^(id sender) {
-                                        NSString *resultCode = sender[@"resultCode"];
-                                        if ([resultCode isEqualToString:@"103000"]){ //返回成功执行的分支
-                                           //显式登录成功返回token
-                                           self.token = sender[@"token"]; 
-                                        }       
-                                    }];
-```
-
-</br>
-
-**响应示例代码**
-
-设置逻辑不返回
-
-## 2.6. 开发者自定义UI
+## 2.5. 开发者自定义UI
 
 SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编辑，如开发者不需自定义，则使用SDK提供的默认样式，建议开发者按照开发者自定义规则个性化授权页面和短信验证页面：
 
@@ -425,7 +362,7 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 
 ![授权页](image\sms-page.png)
 
-### 2.6.1. 方法说明
+### 2.5.1. 方法说明
 
 **功能**
 
@@ -439,7 +376,7 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
                customViews:(void(^)(NSDictionary *customAreaView))customViews;
 ```
 
-### 2.6.2. 参数说明
+### 2.5.2. 参数说明
 
 **请求参数**
 
@@ -485,21 +422,13 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 | APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
 | APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| numFieldBgColr         | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
-| numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
-| numFieldVisability     | 本机号码框隐藏开关                                 | Bool               | 必须嵌套在authPage                 | 2        |
-| switchAccHidden        | 隐藏“切换账号”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
-| switchAccTextColr      | “切换账号”文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
+| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |             |                
 | customView1Y           | 第一个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView1H           | 第一个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView2Y           | 第二个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView2H           | 第二个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView3Y           | 第三个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView3H           | 第三个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
-| SMSFieldBgColr         | 短信验证码输入框颜色                               | UIColor            | 必须嵌套在SMSPage                  | 2        |
-| SMSGetCodeTextColr1    | “获取验证码”不可点击时文字颜色                     | UIColor            | 必须嵌套在SMSPage                  | 2        |
-| SMSGetCodeTextColr2    | “获取验证码”可点击时文字颜色                       | UIColor            | 必须嵌套在SMSPage                  | 2        |
 
 
 
@@ -559,11 +488,11 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 
 
 
-## 2.7. 获取SDK版本号
+## 2.6. 获取SDK版本号
 
 供接入方区分SDK的版本号，便于反馈SDK的相关信息
 
-### 2.7.1. 方法说明
+### 2.6.1. 方法说明
 
 **功能**
 
