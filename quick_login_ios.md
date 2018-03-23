@@ -445,8 +445,6 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
       @"navRightItem":btn,
 //    @"pageBgColr":bgcolor, //背景颜色
       @"pageBgBgImg":bgImage, // 背景图片
-      @"switchAccTextColr":switchTextColor, //切换账号文字颜色
-      @"switchAccHidden":@(NO),// 隐藏切换账号开关
       @"logButtonText":loginButtonText, // 本机号码一键登录文字
       @"logButtonTextColr":loginButtonColor,
       @"numFieldTextColr":phoneTextColor, //本机号码
@@ -454,7 +452,6 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
       @"APPLogo":logo, // 传入替换的logo
       @"APPLogoHideen":@(NO), // 隐藏logo开关
       @"logAbleButtonBgColr":switchTextColor,//登录按钮背景色
-      @"numFieldBgColr":switchTextColor,//本机号码框背景颜色
    	},
     @"privacyProperty" : @{
      	@ "CheckBoxImg": [UIImage imageNamed: @ "qqq.png"], //隐私条款的checkbox
