@@ -710,6 +710,7 @@ http://wap.cmpassport.com:8080/uniapi/uniTokenValidate
 | 200032 | KS缓存不存在                                                 |
 | 200033 | 复用中间件获取Token失败                                      |
 | 200034 | 预取号token失效                                              |
+|200036  | 预取号失败                                                   |
 
 </br>
 
