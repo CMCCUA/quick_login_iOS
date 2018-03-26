@@ -227,16 +227,22 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 **原型**
 
-`TYRZUILogin -- getTokenExpWithController:complete:`
+`TYRZUILogin -- getTokenExpWithController:(UIViewController *)vc
+               customUIWithParams:(NSDictionary *)customUIParams
+                     tokenExpView:(void(^)(UIView *view))tokenExpView
+                         complete:(void (^)(id sender))complete`
 
 ```objective-c
+
 + (void)getTokenExpWithController:(UIViewController *)vc
+               customUIWithParams:(NSDictionary *)customUIParams
+                     tokenExpView:(void(^)(UIView *view))tokenExpView
                          complete:(void (^)(id sender))complete;
 ```
 
 </br>
 
-### 2.3.2. 参数说明
+### 2.3.2. 取号参数说明
 
 **请求参数**
 
@@ -260,23 +266,84 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 </br>
 
+
+### 2.3.3. 自定义UI参数说明
+
+**请求参数**
+
+| 参数           | 类型                                  | 说明                                                         | 是否必填 |
+| -------------- | ------------------------------------- | ------------------------------------------------------------ | -------- |
+| customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                         | 否       |
+| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义视图，仅支持授权页。共支持三个开发者自定义的试图：customView1；customView2；customView3 | 否       |
+
+**响应参数**
+
+无
+
+**customUIParams参数结构**
+
+1. 当UI元素不嵌套时（所属层级1），授权页面和短信验证码页面显示效果一致；
+2. 当UI元素嵌套时（所属层级2），根据嵌套的上级元素（**authPage、SMSPage、privacyProperty**），分别定义授权页面和短信验证码页面的显示效果；
+3. 部分UI元素仅支持在短信验证码或授权页面显示，这部分元素必须嵌套在相应的页面下
+4. 开发者如果不设置自定义元素，将使用系统默认UI
+5. 短信验证码页面不支持开发者添加子视图。
+
+| 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                         | 所属层级 |
+| ---------------------- | -------------------------------------------------- | ------------------ | ---------------------------------- | :------- |
+| authPage               | 授权页面                                           | NSDictionary       | 否                                 | 1        |
+| SMSPage                | 短信验证码页面                                     | NSDictionary       | 否                                 | 1        |
+| privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
+| navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
+| navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| navTitle               | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logDisableButtonBgColr | 登录按钮无效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logButtonTextColr      | 登录按钮文字颜色                                   | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logButtonOffsetY       | 按钮Y轴偏移量调整                                  | NSNumber           | 必须嵌套在authPage                 | 2        |
+| CheckBoxImg            | 隐私条款中的checkbox选中状态时的图片               | UIImage            | 必须嵌套在privacyProperty          | 2        |
+| UnCheckedImage         | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
+| privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
+| UserServiceText        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
+| termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
+| privateTextOffsetY     | 隐私条款整体Y轴偏移量调整                          | NSNumber           | 必须嵌套在privacyProperty          | 2        |
+| privateTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
+| APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
+| APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
+| APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |             |                
+
+
 ### 2.3.3. 示例
 
 **请求示例代码**
 
 ```objective-c
 //显式登录
-- (void)showExplicitlyLogin {
-     __weak typeof(self) weakSelf = self;
-    [TYRZUILogin getTokenExpWithController:weakSelf
+[TYRZUILogin getTokenExpWithController:self
+                        customUIWithParams:@{
+                                             @"authPage" : @{
+                                                     @"APPLogoOffsetY":@(60),
+                                                     @"logoWidth":@(150),
+                                                     @"logoHeight":@(150),
+                                                     @"logButtonOffsetY":@(-100),
+                                                     @"privacyProperty" : @{
+                                                             @"privateTextOffsetY":@(-80),
+                                                             }
+                                                     },
+                                             }
+                              tokenExpView:^(UIView *view) {
+//                                  添加自定义View
+                                  UIView *topView = [[UIView alloc]initWithFrame:
+				  CGRectMake(0, 10,self.view.bounds.size.width, 30)];
+                                  topView.backgroundColor = UIColor.redColor;
+//                                  [view addSubview:topView];
+                                             }
                                   complete:^(id sender) {
-                                        NSString *resultCode = sender[@"resultCode"];
-                                        if ([resultCode isEqualToString:@"103000"]){ //返回成功执行的分支
-                                           //显式登录成功返回token
-                                           self.token = sender[@"token"]; 
-                                        }       
-                                    }];
-}
+                                                 [self showInfo:sender];
+                                             }];
 ```
 
 </br>
@@ -352,144 +419,13 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 }
 ```
 
-## 2.5. 开发者自定义UI
-
-SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编辑，如开发者不需自定义，则使用SDK提供的默认样式，建议开发者按照开发者自定义规则个性化授权页面和短信验证页面：
 
 
-
-![授权页](image\auth-page.png)
-
-![授权页](image\sms-page.png)
-
-### 2.5.1. 方法说明
-
-**功能**
-
-通过本方法，修改授权页和短信验证码页面的元素
-
-**原型**
-`TYRZUILogin -- customUIWithParams:customViews:`
-
-```objective-c
-+ (void)customUIWithParams:(NSDictionary *)customUIParams
-               customViews:(void(^)(NSDictionary *customAreaView))customViews;
-```
-
-### 2.5.2. 参数说明
-
-**请求参数**
-
-| 参数           | 类型                                  | 说明                                                         | 是否必填 |
-| -------------- | ------------------------------------- | ------------------------------------------------------------ | -------- |
-| customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                         | 否       |
-| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义视图，仅支持授权页。共支持三个开发者自定义的试图：customView1；customView2；customView3 | 否       |
-
-**响应参数**
-
-无
-
-**customUIParams参数结构**
-
-1. 当UI元素不嵌套时（所属层级1），授权页面和短信验证码页面显示效果一致；
-2. 当UI元素嵌套时（所属层级2），根据嵌套的上级元素（**authPage、SMSPage、privacyProperty**），分别定义授权页面和短信验证码页面的显示效果；
-3. 部分UI元素仅支持在短信验证码或授权页面显示，这部分元素必须嵌套在相应的页面下
-4. 开发者如果不设置自定义元素，将使用系统默认UI
-5. 短信验证码页面不支持开发者添加子视图。
-
-| 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                         | 所属层级 |
-| ---------------------- | -------------------------------------------------- | ------------------ | ---------------------------------- | :------- |
-| authPage               | 授权页面                                           | NSDictionary       | 否                                 | 1        |
-| SMSPage                | 短信验证码页面                                     | NSDictionary       | 否                                 | 1        |
-| privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
-| navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
-| navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| navTitle               | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logDisableButtonBgColr | 登录按钮无效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logButtonTextColr      | 登录按钮文字颜色                                   | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logButtonOffsetY       | 按钮Y轴偏移量调整                                  | NSNumber           | 必须嵌套在authPage                 | 2        |
-| CheckBoxImg            | 隐私条款中的checkbox选中状态时的图片               | UIImage            | 必须嵌套在privacyProperty          | 2        |
-| UnCheckedImage         | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
-| privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| UserServiceText        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
-| termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| privateTextOffsetY     | 隐私条款整体Y轴偏移量调整                          | NSNumber           | 必须嵌套在privacyProperty          | 2        |
-| privateTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
-| APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
-| APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
-| APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |             |                
-| customView1Y           | 第一个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView1H           | 第一个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView2Y           | 第二个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView2H           | 第二个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView3Y           | 第三个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView3H           | 第三个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
-
-
-
-
-**使用示例**
-
-``` objective-c
-[TYRZUILogin customUIWithParams:@{
-   @"navBgColr":ua_hexColor(0xEE0000), 
-  
-   @"authPage" : @{
-      @"navLeftImg":logo,
-      @"navTitle":title,
-      @"navRightItem":btn,
-//    @"pageBgColr":bgcolor, //背景颜色
-      @"pageBgBgImg":bgImage, // 背景图片
-      @"logButtonText":loginButtonText, // 本机号码一键登录文字
-      @"logButtonTextColr":loginButtonColor,
-      @"numFieldTextColr":phoneTextColor, //本机号码
-      @"privacyTextColr":protocolTextColor,// 协议字体颜色
-      @"APPLogo":logo, // 传入替换的logo
-      @"APPLogoHideen":@(NO), // 隐藏logo开关
-      @"logAbleButtonBgColr":switchTextColor,//登录按钮背景色
-   	},
-    @"privacyProperty" : @{
-     	@ "CheckBoxImg": [UIImage imageNamed: @ "qqq.png"], //隐私条款的checkbox
-		@ "UAUserServiceText": @ "开发者协议", //开发者的协议
-		@ "privacyCheckBoxColr": @(NO), //勾选按钮颜色
-		@ "privateTextColr": [UIColor orangeColor], // 协议字体颜色
-		@ "termTextColr": [UIColor redColor], //条款字体颜色
-		@ "userServiceTipColor": [UIColor blueColor],
-		@ "privateTextOffsetY": @0,
-     },
-}
-        customViews: ^ (NSDictionary * customAreaView) {
-		//此处将自定义的视图加进对应页面的View
-		if (customAreaView[@ "customView1"]) {
-			//authPage为授权页面的键名
-			UIView * authView = customAreaView[@ "customView1"];
-			authView.backgroundColor = [UIColor redColor];
-		}
-		if (customAreaView[@ "customView2"]) {
-			UIView * authView = customAreaView[@ "customView2"];
-			authView.backgroundColor = [UIColor greenColor];
-		}
-		if (customAreaView[@ "customView3"]) {
-			UIView * authView = customAreaView[@ "customView3"];
-			authView.backgroundColor = [UIColor blueColor];
-		}                              
-     }
-];
-
-```
-
-
-
-## 2.6. 获取SDK版本号
+## 2.5. 获取SDK版本号
 
 供接入方区分SDK的版本号，便于反馈SDK的相关信息
 
-### 2.6.1. 方法说明
+### 2.5.1. 方法说明
 
 **功能**
 
