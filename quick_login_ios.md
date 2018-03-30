@@ -522,8 +522,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
       @"APPLogo":logo, // 传入替换的logo
       @"APPLogoHideen":@(NO), // 隐藏logo开关
       @"logAbleButtonBgColr":switchTextColor,//登录按钮背景色
-      @"numFieldBgColr":switchTextColor,//本机号码框背景颜色
-   	},
+      },
     @"privacyProperty" : @{
      	@ "CheckBoxImg": [UIImage imageNamed: @ "qqq.png"], //隐私条款的checkbox
 		@ "UAUserServiceText": @ "开发者协议", //开发者的协议
