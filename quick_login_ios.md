@@ -472,6 +472,7 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 | pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logDisableButtonBgColr | 登录按钮无效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| logButtonText	         | 登录按钮文字                                      | NSString            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logButtonTextColr      | 登录按钮文字颜色                                   | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logButtonOffsetY       | 按钮Y轴偏移量调整                                  | NSNumber           | 必须嵌套在authPage                 | 2        |
 | CheckBoxImg            | 隐私条款中的checkbox选中状态时的图片               | UIImage            | 必须嵌套在privacyProperty          | 2        |
