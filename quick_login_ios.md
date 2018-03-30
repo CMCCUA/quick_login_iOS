@@ -469,7 +469,6 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logDisableButtonBgColr | 登录按钮无效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logButtonText	         | 登录按钮文字                                      | NSString            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logButtonTextColr      | 登录按钮文字颜色                                   | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logButtonOffsetY       | 按钮Y轴偏移量调整                                  | NSNumber           | 必须嵌套在authPage                 | 2        |
@@ -485,7 +484,6 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoHeight  | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| numFieldBgColr         | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldVisability     | 本机号码框隐藏开关                                 | Bool               | 必须嵌套在authPage                 | 2        |
 | switchAccHidden        | 隐藏“其它号码”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
