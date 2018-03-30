@@ -417,13 +417,11 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 ## 2.6. 开发者自定义UI
 
-SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编辑，如开发者不需自定义，则使用SDK提供的默认样式，建议开发者按照开发者自定义规则个性化授权页面和短信验证页面：
+SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自定义，则使用SDK提供的默认样式，建议开发者按照开发者自定义规则个性化授权页面和短信验证页面：
 
 
 
 ![授权页](image\auth-page.png)
-
-![授权页](image\sms-page.png)
 
 ### 2.6.1. 方法说明
 
@@ -486,12 +484,12 @@ SDK**登录授权页**和**短信验证码页面**部分元素可供开发者编
 | APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
 | APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoHeight  | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
 | numFieldBgColr         | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldVisability     | 本机号码框隐藏开关                                 | Bool               | 必须嵌套在authPage                 | 2        |
-| switchAccHidden        | 隐藏“切换账号”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
-| switchAccTextColr      | “切换账号”文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
+| switchAccHidden        | 隐藏“其它号码”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
+| switchAccTextColr      | “其它号码”文字颜色                             | UIColor            | 必须嵌套在authPage                 | 2        |
 | customView1Y           | 第一个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView1H           | 第一个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
 | customView2Y           | 第二个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
