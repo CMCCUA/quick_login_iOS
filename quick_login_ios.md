@@ -427,7 +427,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 
 **功能**
 
-通过本方法，修改授权页和短信验证码页面的元素
+通过本方法，修改授权页的元素。其中，开发者可以通过customUIParams修改默认授权页面的元素；可以通过customViews添加开发者自定义UI，customViews可支持多个，可由开发者自定义该UI的显示位置（通过坐标设置）
 
 **原型**
 `TYRZUILogin -- customUIWithParams:customViews:`
