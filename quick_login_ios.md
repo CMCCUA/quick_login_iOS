@@ -227,10 +227,7 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 **原型**
 
-`TYRZUILogin -- getTokenExpWithController:(UIViewController *)vc
-                       customUIWithParams:(NSDictionary *)customUIParams
-                             tokenExpView:(void(^)(UIView *view))tokenExpView
-                                 complete:(void (^)(id sender))complete`
+`TYRZUILogin -- getTokenExpWithController:complete`
 
 ```objective-c
 
