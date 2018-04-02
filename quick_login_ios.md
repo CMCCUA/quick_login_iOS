@@ -288,6 +288,8 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 4. 开发者如果不设置自定义元素，将使用系统默认UI
 5. 短信验证码页面不支持开发者添加子视图。
 
+![authpage](/image/auth-page.png)
+
 | 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                         | 所属层级 |
 | ---------------------- | -------------------------------------------------- | ------------------ | ---------------------------------- | :------- |
 | authPage               | 授权页面                                           | NSDictionary       | 否                                 | 1        |
@@ -313,7 +315,7 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 | APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
 | APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |             |                
+| logoHeight             | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |             |
 
 
 ### 2.3.3. 示例
