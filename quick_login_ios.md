@@ -528,7 +528,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 		@ "privateTextOffsetY": @0,
      },
 }
-        customViews: ^ (NSDictionary * customAreaView) {
+        customViews: ^ (UIView * customAreaView) {
 		//此处将自定义的视图加进对应页面的View
 		if (customAreaView) {
                    UIView *authView1 = [[UIView alloc]initWithFrame:CGRectMake(30, 30, 160, 33) ];
