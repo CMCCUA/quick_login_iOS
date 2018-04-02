@@ -434,7 +434,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 
 ```objective-c
 + (void)customUIWithParams:(NSDictionary *)customUIParams
-               customViews:(void(^)(NSDictionary *customAreaView))customViews;
+               customViews:(void(^)(UIView *customAreaView))customViews;
 ```
 
 ### 2.6.2. 参数说明
@@ -444,7 +444,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | 参数           | 类型                                  | 说明                                                         | 是否必填 |
 | -------------- | ------------------------------------- | ------------------------------------------------------------ | -------- |
 | customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                         | 否       |
-| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义视图，仅支持授权页。共支持三个开发者自定义的试图：customView1；customView2；customView3 | 否       |
+| customViews    | void(^)(UIView *customAreaView) | 用户添加自定义视图（任意添加视图个数和设置坐标位置），仅支持授权页。 | 否       |
 
 **响应参数**
 
@@ -485,15 +485,10 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoHeight  | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
 | numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
-| numFieldVisability     | 本机号码框隐藏开关                                 | Bool               | 必须嵌套在authPage                 | 2        |
+| numFieldVisability     | 本机号码框整体隐藏开关YES为隐藏,NO为显示             | Bool               | 必须嵌套在authPage                 | 2        |
+| numFieldHidden     	 | 本机号码框背景隐藏(切换)YES为隐藏,NO为显示            | Bool               | 必须嵌套在authPage                 | 2        |
 | switchAccHidden        | 隐藏“其它号码”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
 | switchAccTextColr      | “其它号码”文字颜色                             | UIColor            | 必须嵌套在authPage                 | 2        |
-| customView1Y           | 第一个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView1H           | 第一个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView2Y           | 第二个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView2H           | 第二个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView3Y           | 第三个customView的Y轴偏移量调整                    | NSNumber           | 必须嵌套在authPage                 | 2        |
-| customView3H           | 第三个customView的高度                             | NSNumber           | 必须嵌套在authPage                 | 2        |
 | SMSFieldBgColr         | 短信验证码输入框颜色                               | UIColor            | 必须嵌套在SMSPage                  | 2        |
 | SMSGetCodeTextColr1    | “获取验证码”不可点击时文字颜色                     | UIColor            | 必须嵌套在SMSPage                  | 2        |
 | SMSGetCodeTextColr2    | “获取验证码”可点击时文字颜色                       | UIColor            | 必须嵌套在SMSPage                  | 2        |
@@ -535,19 +530,12 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 }
         customViews: ^ (NSDictionary * customAreaView) {
 		//此处将自定义的视图加进对应页面的View
-		if (customAreaView[@ "customView1"]) {
-			//authPage为授权页面的键名
-			UIView * authView = customAreaView[@ "customView1"];
-			authView.backgroundColor = [UIColor redColor];
-		}
-		if (customAreaView[@ "customView2"]) {
-			UIView * authView = customAreaView[@ "customView2"];
-			authView.backgroundColor = [UIColor greenColor];
-		}
-		if (customAreaView[@ "customView3"]) {
-			UIView * authView = customAreaView[@ "customView3"];
-			authView.backgroundColor = [UIColor blueColor];
-		}                              
+		if (customAreaView) {
+                   UIView *authView1 = [[UIView alloc]initWithFrame:CGRectMake(30, 30, 160, 33) ];
+                   authView1.backgroundColor = [UIColor redColor];
+                   [self customShareButtonsWithView:authView1];
+                   [customAreaView addSubview:authView1];
+                }                          
      }
 ];
 
