@@ -465,7 +465,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
 | navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
 | navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| navTitle               | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
+| navAttrTitle            | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
@@ -500,44 +500,53 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 
 ``` objective-c
 [TYRZUILogin customUIWithParams:@{
-   @"navBgColr":ua_hexColor(0xEE0000), 
-  
-   @"authPage" : @{
-      @"navLeftImg":logo,
-      @"navTitle":title,
-      @"navRightItem":btn,
-//    @"pageBgColr":bgcolor, //背景颜色
-      @"pageBgBgImg":bgImage, // 背景图片
-      @"switchAccTextColr":switchTextColor, //切换账号文字颜色
-      @"switchAccHidden":@(NO),// 隐藏切换账号开关
-      @"logButtonText":loginButtonText, // 本机号码一键登录文字
-      @"logButtonTextColr":loginButtonColor,
-      @"numFieldTextColr":phoneTextColor, //本机号码
-      @"privacyTextColr":protocolTextColor,// 协议字体颜色
-      @"APPLogo":logo, // 传入替换的logo
-      @"APPLogoHideen":@(NO), // 隐藏logo开关
-      @"logAbleButtonBgColr":switchTextColor,//登录按钮背景色
-      },
-    @"privacyProperty" : @{
-     	@ "CheckBoxImg": [UIImage imageNamed: @ "qqq.png"], //隐私条款的checkbox
-		@ "UAUserServiceText": @ "开发者协议", //开发者的协议
-		@ "privacyCheckBoxColr": @(NO), //勾选按钮颜色
-		@ "privateTextColr": [UIColor orangeColor], // 协议字体颜色
-		@ "termTextColr": [UIColor redColor], //条款字体颜色
-		@ "userServiceTipColor": [UIColor blueColor],
-		@ "privateTextOffsetY": @0,
-     },
-}
-        customViews: ^ (UIView * customAreaView) {
-		//此处将自定义的视图加进对应页面的View
-		if (customAreaView) {
-                   UIView *authView1 = [[UIView alloc]initWithFrame:CGRectMake(30, 30, 160, 33) ];
-                   authView1.backgroundColor = [UIColor redColor];
-                   [self customShareButtonsWithView:authView1];
-                   [customAreaView addSubview:authView1];
-                }                          
-     }
-];
+                                      @"navBgColr": hexColor(0x000000),
+                                      @"navAttrTitle":navTitle,
+                                      @"navLeftImg":leftIcon,
+                                      @"pageBgColr":[UIColor grayColor],
+                                      @"navRightItem":btn,
+                                      @"navLeftImg":leftIcon,
+                                      @"logAbleButtonBgColr":[UIColor redColor],
+                                      @"logButtonText":text,
+                                      @"logButtonTextColr":hexColor(0x009ACD),// 本机号码一键登录字体颜色
+                                      @"authPage" : @{
+                                              @"APPLogo":logoImage, // 传入替换的logo
+                                              @"APPLogoOffsetY":@20,
+                                              @"APPLogoHideen":@(NO), // 隐藏logo开关
+                                              @"logButtonOffsetY":@20,
+                                              @"logoWidth":@80,
+                                              @"logoHeight":@80,
+                                              @"numFieldVisability":@(NO),
+                                              @"numFieldHidden":@(YES),
+                                              @"switchAccHidden":@(NO),//其它号码按钮隐藏
+                                              @"switchAccTextColr":[UIColor redColor],
+                                              @"numFieldTextColr":hexColor(0x1E90FF), //本机号码
+                                              @"barHidden" : @(YES),//logo下分割线隐藏开关
+                                              @"numFieldBgColr":hexColor(0x0bbe06),//本机号码框背景颜色
+                                            },
+                                      @"privacyProperty" : @{
+                                              @"UnCheckedImage":logoImage,
+                                              @"CheckBoxImg":[UIImage imageNamed:@"checkOn"],//隐私条款的checkbox
+                                              @"UserServiceText":@"爱奇艺户协议",//开发者的协议
+                                              @"privateTextColr":[UIColor orangeColor],// 协议字体颜色
+                                              @"termTextColr":[UIColor blueColor],//条款字体颜色
+                                              @"privateTextOffsetY":@20,
+                                              @"privateTextURL":@"http://dev.10086.cn/",
+                                              },
+                                      @"SMSPage":@{
+                                              @"navTitle":navTitle,
+                                              @"navLeftImg":[UIImage imageNamed:@"checkOn"],
+                                              @"navRightItem":btn,
+                                              @"SMSFieldBgColr":[UIColor blackColor],
+                                              },
+                                      } customViews:^(UIView *customAreaView) {
+                                        if (customAreaView) {
+                                           UIView *authView = [[UIView alloc]initWithFrame:CGRectMake(50, 40, 200, 30)];
+                                           authView.backgroundColor = [UIColor blueColor];
+                                           [self customShareButtonsWithView:authView];
+                                            [customAreaView addSubview:authView];
+                                      }
+  }];
 
 ```
 
