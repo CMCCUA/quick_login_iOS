@@ -293,7 +293,7 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 | SMSPage                | 短信验证码页面                                     | NSDictionary       | 否                                 | 1        |
 | privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
 | navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
-| navHidden              | 导航栏隐藏开关(默认是NO)                                         | BOOL              | 否                                 | 1        |
+| navHidden              | 隐藏导航栏开关(默认状态为NO)                                         | BOOL              | 否                                 | 1        |
 | navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | navAttrTitle               | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
 | navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
