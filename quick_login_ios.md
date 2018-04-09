@@ -489,9 +489,11 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | numFieldHidden     	 | 本机号码框背景隐藏(切换)YES为隐藏,NO为显示            | Bool               | 必须嵌套在authPage                 | 2        |
 | switchAccHidden        | 隐藏“其它号码”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
 | switchAccTextColr      | “其它号码”文字颜色                             | UIColor            | 必须嵌套在authPage                 | 2        |
+| bottomLabelClor        | 底部标识文字颜色                                    | UIColor            | 必须嵌套在authPage                  | 2        |
 | SMSFieldBgColr         | 短信验证码输入框颜色                               | UIColor            | 必须嵌套在SMSPage                  | 2        |
 | SMSGetCodeTextColr1    | “获取验证码”不可点击时文字颜色                     | UIColor            | 必须嵌套在SMSPage                  | 2        |
 | SMSGetCodeTextColr2    | “获取验证码”可点击时文字颜色                       | UIColor            | 必须嵌套在SMSPage                  | 2        |
+
 
 
 
@@ -523,7 +525,8 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
                                               @"numFieldTextColr":hexColor(0x1E90FF), //本机号码
                                               @"barHidden" : @(YES),//logo下分割线隐藏开关
                                               @"numFieldBgColr":hexColor(0x0bbe06),//本机号码框背景颜色
-                                            },
+                                              @"bottomLabelClor":[UIColor redColor],//底部标识颜色    
+                                            },
                                       @"privacyProperty" : @{
                                               @"UnCheckedImage":logoImage,
                                               @"CheckBoxImg":[UIImage imageNamed:@"checkOn"],//隐私条款的checkbox
