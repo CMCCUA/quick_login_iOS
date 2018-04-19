@@ -485,8 +485,9 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
 | APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
 | logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight  | logo图片高                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoHeight  | logo图片高                                                   | NSNumber           | 必须嵌套在authPage                 | 2        |
 | numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
+| numFieldBgColr        | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldVisability     | 本机号码框整体隐藏开关YES为隐藏,NO为显示             | Bool               | 必须嵌套在authPage                 | 2        |
 | numFieldHidden     	 | 本机号码框背景隐藏(切换)YES为隐藏,NO为显示            | Bool               | 必须嵌套在authPage                 | 2        |
 | switchAccHidden        | 隐藏“其它号码”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
