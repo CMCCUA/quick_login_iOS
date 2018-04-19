@@ -526,7 +526,6 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
                                               @"switchAccHidden":@(NO),//其它号码按钮隐藏
                                               @"switchAccTextColr":[UIColor redColor],
                                               @"numFieldTextColr":hexColor(0x1E90FF), //本机号码
-                                              @"barHidden" : @(YES),//logo下分割线隐藏开关
                                               @"numFieldBgColr":hexColor(0x0bbe06),//本机号码框背景颜色
                                               @"bottomLabelClor":[UIColor redColor],//底部标识颜色    
                                             },
