@@ -354,7 +354,7 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 
 
-## 2.5. 短信验证码页面登录开关
+## 2.5. 短信验证码页面登录开关（此版本不提供）
 
 ### 2.5.1. 方法描述
 
@@ -445,8 +445,8 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 
 | 参数           | 类型                                  | 说明                                                         | 是否必填 |
 | -------------- | ------------------------------------- | ------------------------------------------------------------ | -------- |
-| customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                         | 否       |
-| customViews    | void(^)(UIView *customAreaView) | 用户添加自定义视图（任意添加视图个数和设置坐标位置），仅支持授权页。 | 否       |
+| customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                            | 否       |
+| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义控件（登录按钮下面区域 ）"authPage"取出生成的自定义View| 否       |
 
 **响应参数**
 
@@ -460,98 +460,117 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 4. 开发者如果不设置自定义元素，将使用系统默认UI
 5. 短信验证码页面不支持开发者添加自定义视图。
 
-| 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                         | 所属层级 |
+| 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                    | 所属层级 |
 | ---------------------- | -------------------------------------------------- | ------------------ | ---------------------------------- | :------- |
-| authPage               | 授权页面                                           | NSDictionary       | 否                                 | 1        |
-| SMSPage                | 短信验证码页面                                     | NSDictionary       | 否                                 | 1        |
+| authPage               | 授权页面                                          | NSDictionary       | 否                                 | 1        |
 | privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
 | navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
-| navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| navAttrTitle            | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logAbleButtonBgColr    | 登录按钮有效时颜色                                 | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logButtonText	         | 登录按钮文字                                      | NSString            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logButtonTextColr      | 登录按钮文字颜色                                   | UIColor            | 是，不嵌套时同时应用在授权和短验页 | 1/2      |
-| logButtonOffsetY       | 按钮Y轴偏移量调整                                  | NSNumber           | 必须嵌套在authPage                 | 2        |
-| CheckBoxImg            | 隐私条款中的checkbox选中状态时的图片               | UIImage            | 必须嵌套在privacyProperty          | 2        |
-| UnCheckedImage         | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
+| navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2    |
+| navAttrTitle            | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2   |
+| navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2     |
+| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2      |
+| APPLogoOffsetY         | 图片LOGO的“Y”轴调整（与界面顶部的距离偏移量） | NSNumber            | 必须嵌套在authPage | 2  |
+| CMCCDescOffY             | 标识文案和小LOGO的 “Y”轴调整（LOGO图片底部的距离偏移量） | NSNumber   |必须嵌套在authPage | 2  |
+| numFieldOffY             | 号码框的“Y”轴调整（标识文案和小LOGO底部的距离偏移量） | NSNumber       | 必须嵌套在authPage |  2  |
+| loginBtnOffY             | 登录按钮的“Y”轴调整（号码框底部的距离偏移量） | NSNumber        | 必须嵌套在authPage | 2  |
+| logAbleButtonBgColr    | 登录按钮有效时颜色               | UIColor            | 必须嵌套在authPage | 2      |
+| logDisableButtonBgColr    | 登录按钮无效时颜色            | UIColor            | 必须嵌套在authPage | 2      |
+| logButtonText	         | 登录按钮文字                    | NSString           | 必须嵌套在authPage | 2      |
+| logButtonTextColr      | 登录按钮文字颜色                 | UIColor            | 必须嵌套在authPage | 2      |
+| cornerRadiusScale       | 登录按钮圆角半径系数（真实值为按钮高度除以/此系数） | NSNumber  | 必须嵌套在authPage  | 2    |
+| privacyCheckOnImg       | 隐私条款中的checkbox选中状态时的图片               | UIImage          | 必须嵌套在privacyProperty          | 2        |
+| privacyCheckOffImg     | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
 | privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| UserServiceText        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
+| checkBoxHidden     | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
 | termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| privateTextOffsetY     | 隐私条款整体Y轴偏移量调整                          | NSNumber           | 必须嵌套在privacyProperty          | 2        |
-| privateTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
-| APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
-| APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
-| APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight  | logo图片高                                                   | NSNumber           | 必须嵌套在authPage                 | 2        |
+| termTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
+| termTextContent        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
+| CMCCDescTextColr     | 移动认证描述字体颜色                          | UIColor           | 必须嵌套在authPage         | 2        |
 | numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldBgColr        | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
-| numFieldVisability     | 本机号码框整体隐藏开关YES为隐藏,NO为显示             | Bool               | 必须嵌套在authPage                 | 2        |
-| numFieldHidden     	 | 本机号码框背景隐藏(切换)YES为隐藏,NO为显示            | Bool               | 必须嵌套在authPage                 | 2        |
-| switchAccHidden        | 隐藏“其它号码”，YES时隐藏，NO时显示                | Bool               | 必须嵌套在authPage                 | 2        |
-| switchAccTextColr      | “其它号码”文字颜色                             | UIColor            | 必须嵌套在authPage                 | 2        |
-| bottomLabelClor        | 底部标识文字颜色                                    | UIColor            | 必须嵌套在authPage                  | 2        |
-| SMSFieldBgColr         | 短信验证码输入框颜色                               | UIColor            | 必须嵌套在SMSPage                  | 2        |
-| SMSGetCodeTextColr1    | “获取验证码”不可点击时文字颜色                     | UIColor            | 必须嵌套在SMSPage                  | 2        |
-| SMSGetCodeTextColr2    | “获取验证码”可点击时文字颜色                       | UIColor            | 必须嵌套在SMSPage                  | 2        |
-
-
-
-
+| numFieldLeftText        | 手机号码框左侧文本内容                                 | NSString            | 必须嵌套在authPage                 | 2        |
+| APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
+| logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
+| logoHeight  | logo图片高                                                   | NSNumber           | 必须嵌套在authPage                 | 2        |
+| CMCCDescTextLogoImg     	 | 标识文案小图标LOGO            | UIImage               | 必须嵌套在authPage                 | 2        |
+| CMCCDescTextColr        | 标识文案文字颜色                | UIColor               | 必须嵌套在authPage                 | 2        |
+| sliderVHidden      | 号码框竖线隐藏,YES为隐藏,NO和默认为显示                          | NSNumber            | 必须嵌套在authPage                 | 2        |
+| sliderHHidden      | 号码框底部横线隐藏,YES为隐藏,NO和默认为显示                        | NSNumber            | 必须嵌套在authPage                 | 2        |
+| privacyTextSize      | 隐私协议字体大小                        | NSNumber            | 必须嵌套在authPage                 | 2        |
 
 **使用示例**
 
 ``` objective-c
-[TYRZUILogin customUIWithParams:@{
-                                      @"navBgColr": hexColor(0x000000),
-                                      @"navAttrTitle":navTitle,
-                                      @"navLeftImg":leftIcon,
-                                      @"pageBgColr":[UIColor grayColor],
-                                      @"navRightItem":btn,
-                                      @"navLeftImg":leftIcon,
-                                      @"logAbleButtonBgColr":[UIColor redColor],
-                                      @"logButtonText":text,
-                                      @"logButtonTextColr":hexColor(0x009ACD),// 本机号码一键登录字体颜色
-                                      @"authPage" : @{
-                                              @"APPLogo":logoImage, // 传入替换的logo
-                                              @"APPLogoOffsetY":@20,
-                                              @"APPLogoHideen":@(NO), // 隐藏logo开关
-                                              @"logButtonOffsetY":@20,
-                                              @"logoWidth":@80,
-                                              @"logoHeight":@80,
-                                              @"numFieldVisability":@(NO),
-                                              @"numFieldHidden":@(YES),
-                                              @"switchAccHidden":@(NO),//其它号码按钮隐藏
-                                              @"switchAccTextColr":[UIColor redColor],
-                                              @"numFieldTextColr":hexColor(0x1E90FF), //本机号码
-                                              @"numFieldBgColr":hexColor(0x0bbe06),//本机号码框背景颜色
-                                              @"bottomLabelClor":[UIColor redColor],//底部标识颜色    
-                                            },
-                                      @"privacyProperty" : @{
-                                              @"UnCheckedImage":logoImage,
-                                              @"CheckBoxImg":[UIImage imageNamed:@"checkOn"],//隐私条款的checkbox
-                                              @"UserServiceText":@"爱奇艺户协议",//开发者的协议
-                                              @"privateTextColr":[UIColor orangeColor],// 协议字体颜色
-                                              @"termTextColr":[UIColor blueColor],//条款字体颜色
-                                              @"privateTextOffsetY":@20,
-                                              @"privateTextURL":@"http://dev.10086.cn/",
-                                              },
-                                      @"SMSPage":@{
-                                              @"navTitle":navTitle,
-                                              @"navLeftImg":[UIImage imageNamed:@"checkOn"],
-                                              @"navRightItem":btn,
-                                              @"SMSFieldBgColr":[UIColor blackColor],
-                                              },
-                                      } customViews:^(UIView *customAreaView) {
-                                        if (customAreaView) {
-                                           UIView *authView = [[UIView alloc]initWithFrame:CGRectMake(50, 40, 200, 30)];
-                                           authView.backgroundColor = [UIColor blueColor];
-                                           [self customShareButtonsWithView:authView];
-                                            [customAreaView addSubview:authView];
-                                      }
-  }];
+- (NSDictionary *)getParamsDictMG{
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:1];
+    NSAttributedString *navTitle = [[NSAttributedString alloc] initWithString:@"芒果TV" attributes:@{NSFontAttributeName:kLabelFontSize(18),NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    UIImage *leftIcon =  [UIImage imageNamed:@"title_back"];//大图显示整个导航栏有问题（要控制左右导航栏图标的大小）;
+    
+    params[@"navBgColr"] = [UIColor whiteColor];
+    UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [rightBtn setTitle:@"注册" forState:UIControlStateNormal];
+    [rightBtn sizeToFit];
+    [rightBtn setTitleColor:[UIColor grayColor] forState:(UIControlStateNormal)];
+    rightBtn.titleLabel.font = kLabelFontSize(16);
+    [rightBtn addTarget:self action:@selector(rightAciton:) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *logoImage = [UIImage imageNamed:@"芒果"];
+    params[@"navAttrTitle"] = navTitle;
+    params[@"navLeftImg"] = leftIcon;
+    //    params[@"pageBgColr"] = [UIColor redColor],
+    //    params[@"logDisableButtonBgColr"] = hexColor(0xdddddd);
+    
+    params[@"authPage"] = @{
+                            @"CMCCDescTextLogoImg":[UIImage imageNamed:@"盾牌"],
+                            @"CMCCDescTextColr":[UIColor grayColor],
+                            @"navAttrTitle":navTitle,
+                            @"navLeftImg":leftIcon,
+                            @"navRightItem":rightBtn,
+                            @"APPLogo":logoImage,
+                            //@"numFieldBgColr":hexColor(0xeeeeee),
+                            //@"numFieldTextColr":[UIColor redColor],
+                            @"numFieldLeftText":@"中国+86",
+                            @"logAbleButtonBgColr":hexColor(0xF8772B),
+                            @"logButtonTextColr":[UIColor whiteColor],
+                            @"logDisableButtonBgColr":hexColor(0xdddddd),
+                            @"logButtonText":@"手机号码一键登录",
+                            
+                            @"logoWidth":@(100),
+                            @"logoHeight":@(100),
+                            //@"sliderVHidden":@(YES),
+                            //@"sliderHHidden":@(YES),
+                            //@"APPLogoOffsetY":@(100),
+                            //@"CMCCDescOffY":@(100),
+                            //@"numFieldOffY":@(30),
+                            @"loginBtnOffY":@(10),
+                            @"cornerRadiusScale":@(2),
+                            };
+    params[@"privacyProperty"] = @{
+                                   //@"privacyCheckOnImg":[UIImage imageNamed:@"(weibo)_SFont.CN"],
+                                   //@"privacyCheckOffImg":[UIImage imageNamed:@"(WeChat)_SFont.CN.png"],
+                                   //@"privacyTextColr":hexColor(0x24C2AF),
+                                   //@"privacyTextSize":@(13),
+                                   @"termTextColr":hexColor(0xF8772B),
+                                   @"checkBoxHidden":@(YES),
+                                   //@"termTextContent":@"美团用户协议",
+                                   //@"termTextURL":@"dev.10086.cn",
+                                   };
+    return [NSDictionary dictionaryWithDictionary:params];
+    
+}
+
+SDK的api方法调用：
+    [TYRZUILogin customUIWithParams:[self getParamsDictMG] customViews:^(NSDictionary *customAreaView) {
+        //此处将自定义的视图加进对应页面的View
+        if (customAreaView[@"authPage"]) {
+            //authPage为授权页面的键名
+            UIView *authView = customAreaView[@"authPage"];
+            if (type==0) {
+                [weakself customShareButtonsWithView:authView];
+            }else{
+                [weakself customMGViewButtonsWithView:authView];
+            }
+        }
+    }];
 
 ```
 
