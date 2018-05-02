@@ -481,7 +481,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | privacyCheckOnImg       | 隐私条款中的checkbox选中状态时的图片               | UIImage          | 必须嵌套在privacyProperty          | 2        |
 | privacyCheckOffImg     | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
 | privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| checkBoxHidden     | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
+| checkBoxHidden     | 隐私条款前的图标隐藏,YES为隐藏,NO和默认为显示             | NSNumber            | 必须嵌套在privacyProperty          | 2        |
 | termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
 | termTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
 | termTextContent        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
