@@ -485,7 +485,6 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
 | termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
 | termTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
 | termTextContent        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
-| CMCCDescTextColr     | 移动认证描述字体颜色                          | UIColor           | 必须嵌套在authPage         | 2        |
 | numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldBgColr        | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
 | numFieldLeftText        | 手机号码框左侧文本内容                                 | NSString            | 必须嵌套在authPage                 | 2        |
