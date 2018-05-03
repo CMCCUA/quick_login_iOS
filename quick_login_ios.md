@@ -305,10 +305,12 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 | CheckBoxImg            | 隐私条款中的checkbox选中状态时的图片               | UIImage            | 必须嵌套在privacyProperty          | 2        |
 | UnCheckedImage         | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
 | privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| privacyText            | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
+| privacyText            | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty 
+| privacyText2           | 开发者用户第二条协议文本内容                             | NSString           | 必须嵌套在privacyProperty| 2        |
 | termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
 | privateTextOffsetY     | 隐私条款整体Y轴偏移量调整                          | NSNumber           | 必须嵌套在privacyProperty          | 2        |
-| privateTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
+| privateTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty 
+| privateTextURL2        | 用户自定义的条第二条条款页面链接                           | NSString           | 必须嵌套在privacyProperty | 2        |
 | APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
 | APPLogoHidden          | 隐藏应用logo，YES时隐藏，NO时显示                  | Bool               | 必须嵌套在authPage                 | 2        |
 | APPLogoOffsetY         | logo图片Y轴偏移量调整                              | NSNumber           | 必须嵌套在authPage                 | 2        |
