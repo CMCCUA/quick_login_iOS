@@ -80,7 +80,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 #2. SDK方法说明
 
-## 2.1. 初始化appid和appkey
+## 2.1. 初始化
 
 ### 2.1.1. 方法描述
 
@@ -90,10 +90,8 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **原型**
 
-`TYRZBaseApi -- initializeWithAppId:appKey:`
-
 ```objective-c
-+ (void)initializeWithAppId:(NSString *)appId appKey:(NSString *)appKey;
++ (void)registerAppId:(NSString *)appId appKey:(NSString *)appKey;
 ```
 
 </br>
@@ -116,42 +114,22 @@ sdk技术问题沟通QQ群：609994083</br>
 
 </br>
 
-### 2.1.3. 示例
-
-**请求示例代码**
-
-```objective-c
-[TYRZUILogin initializeWithAppId:APPID appKey:APPKEY];
-```
-
-
-
-**响应示例代码**
-
-无
-
-</br>
-
-## 2.2. 预取号
+## 2.2. 取号
 
 
 ### 2.2.1. 方法描述
 
 **功能**
 
-使用SDK登录前，可以通过预取号方法提前获取用户信息并缓存。用户使用一键登录时，会优先使用缓存的信息快速请求SDK服务端获取`token`和`用户ID(openID)`等信息，提高登录速度。缓存的有效时间是5min并且只能使用一次，预取号成功后，如果用户成功进入授权页，但未授权给应用（未点一键登录按钮），并返回到上一级页面，预取号缓存将失效，预取号缓存失效后，用户使用显式登录时，将使用常规流程获取token信息。**注：预取号方法仅对显式登录有效。**
-
-**方法处理逻辑**
-
-![](image/pre_process.png)
+本方法用于发起取号请求，并返回用户当前网络环境是否具备取号条件。SDK将在后台完成网络判断、数据网络切换等内部操作并向网关请求申请获取用户本机号码。取号请求成功后，开发者就可以调用并弹出由开发者自定义布局的授权页面。
 
 
 **原型**
 
-`TYRZUILogin -- preGetPhonenumber:complete`
-
 ```objective-c
-+ (void)preGetPhonenumber:(void (^)(id sender))complete 
++ (void)getPhonenumberWithTimeout:
+				(NSTimeInterval)duration completion:
+						(void (^)(NSDictionary * sender))completion;
 ```
 
 </br>
@@ -160,14 +138,18 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **请求参数**
 
-无
+| 参数       | 类型           | 说明                                    |
+| ---------- | -------------- | --------------------------------------- |
+| duration   | NSTimeInterval | 自定义取号超时时间（默认8秒），单位：秒 |
+| completion | UAFinishBlock  | 取号回调                                |
 
 **响应参数**
 
-| 参数         | 类型         | 说明       | 是否必填 |
-| ---------- | ---------- | -------- | ---- |
-| resultCode | NSUinteger | 返回相应的结果码 | 是    |
-| desc       | NSString   | 调用描述     | 是    |
+| 参数          | 类型     | 说明                          |
+| ------------- | -------- | ----------------------------- |
+| resultCode    | NSString | 返回相应的结果码              |
+| desc          | NSString | 调用描述                      |
+| securityphone | NSString | 手机号码掩码，如“138XXXX0000” |
 
 </br>
 
@@ -176,20 +158,25 @@ sdk技术问题沟通QQ群：609994083</br>
 **请求示例代码**
 
 ```objective-c
-- (void)showSMSCodeLogin {
+_weak typeof(self) weakSelf = self;
+[TYRZSDK getPhonenumberWithTimeout: 8 completion: ^ (NSDictionary * _Nonnull sender) {
 
-    [TYRZUILogin preGetPhonenumber:^(id sender) {
-        NSString *resultCode = sender[@"resultCode"];
-        NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:sender];
-        if ([resultCode isEqualToString:CLIENTSUCCESSCODECLIENT]) {
-            NSLog(@"预取号成功");
-        } else {
-            NSLog(@"预取号失败");
-        }
-        [self showInfo:result];
-    }];
-    
-}
+	[self.indicatorView stopAnimating];
+	[self.indicatorView removeFromSuperview];
+
+	if ([sender[@ "resultCode"] isEqualToString: SUCCESSCODE]) {
+
+		NSLog(@ "%@", [NSThread currentThread]);
+		NSLog(@ "取号成功:%@", sender);
+		// 取号成功则加载authVC自定义布局并拉起
+		[weakSelf showAuthVC: sender];
+
+	} else {
+
+		NSLog(@ "取号失败:%@", sender);
+		[weakSelf showInfo: sender];
+	}
+}];
 ```
 
 </br>
@@ -199,39 +186,32 @@ sdk技术问题沟通QQ群：609994083</br>
 ```
 {
     resultCode = 103000;
-    desc = "success"
+    desc = "success";
+    securityphone = "138XXXX0000"
 }
 ```
 
 </br>
 
-## 2.3. 显式登录
+## 2.3. 授权登录
 
 ### 2.3.1. 方法描述
 
 **功能**
 
-显式登录即一键登录，本方法用于实现**获取用户信息**功能。使用本方法获取到的token，可通过`获取用户信息接口`交换用户信息。</br>
+本方法用于实现：
 
-**交互过程**
-
-SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-style:italic;">预取号成功将不会弹出缓冲页</font>），同时SDK将手机号码信息缓存；若获取用户本机号码成功，自动切换到授权登录页面（图二），用户授权登录后，即可使用本机号码进行登录；若用户获取本机号码失败，自动跳转到短信验证码登录页面（图三，<font  style="color:blue; font-style:italic;">开发者可以选择是否跳到SDK提供的短信验证页面</font>），引导用户使用短信验证码登录。**注意：应用不得通过任何技术手段，在获取用户手机号码的登录过程中，将登录授权界面（图二）隐去，一旦发现有非正常调用行为，我方为了保护用户隐私，有义务下线应用的登录能力。**
-
-![](image/ios-2.png)
+1. 加载应用定制的授权页面ViewController
+2. 用户点击登录授权后返回取号凭证等参数
 
 </br>
 
-**方法处理逻辑**
-
-![](image/exp_process.png)
-
 **原型**
 
-`TYRZUILogin -- getTokenExpWithController:complete:`
-
 ```objective-c
-+ (void)getTokenExpWithController:(UIViewController *)vc
-                         complete:(void (^)(id sender))complete;
++ (void)getAuthorizationWithAuthViewController:
+		(UAAuthViewController *_Nullable)authVC completion:
+			(void (^)(NSDictionary *sender))completion;
 ```
 
 </br>
@@ -240,23 +220,21 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 **请求参数**
 
-| 参数       | 类型               | 说明          | 是否必填 |
-| -------- | ---------------- | ----------- | ---- |
-| vc       | UIViewController | 调用显式登录所在的vc | 是    |
-| complete | UAFinishBlock    | 登录回调        | 是    |
+| 参数     | 类型                 | 说明                                                         |
+| -------- | -------------------- | ------------------------------------------------------------ |
+| authVC   | UAAuthViewController | 授权页面，由开发者完成页面的设计布局。**当authVC传值为nil时，将不弹出授权页，登录方式为隐式登录** |
+| complete | UAFinishBlock        | 登录回调                                                     |
 
 </br>
 
 **响应参数**
 
-| 参数          | 类型       | 说明                                       | 是否必填  |
-| ----------- | -------- | ---------------------------------------- | ----- |
-| resultCode  | NSString | 返回相应的结果码                                 | 是     |
-| token       | NSString | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
-| openID      | NSString | 成功时返回：用户身份唯一标识                           | 成功时必填 |
-| authType    | NSString | 认证类型：0:其他；</br>1:WiFi下网关鉴权；</br>2:网关鉴权；</br>3:短信上行鉴权；</br>7:短信验证码登录 | 成功时必填 |
-| authTypeDes | NSString | 认证类型描述，对应authType                        | 成功时必填 |
-| desc        | NSString | 调用描述                                     | 否     |
+| 参数       | 类型     | 说明                                                         | 是否必填   |
+| ---------- | -------- | ------------------------------------------------------------ | ---------- |
+| resultCode | NSString | 返回相应的结果码                                             | 是         |
+| token      | NSString | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
+| openID     | NSString | 成功时返回：用户身份唯一标识                                 | 成功时必填 |
+| desc       | NSString | 调用描述                                                     | 否         |
 
 </br>
 
@@ -265,18 +243,15 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 **请求示例代码**
 
 ```objective-c
-//显式登录
-- (void)showExplicitlyLogin {
-     __weak typeof(self) weakSelf = self;
-    [TYRZUILogin getTokenExpWithController:weakSelf
-                                  complete:^(id sender) {
-                                        NSString *resultCode = sender[@"resultCode"];
-                                        if ([resultCode isEqualToString:@"103000"]){ //返回成功执行的分支
-                                           //显式登录成功返回token
-                                           self.token = sender[@"token"]; 
-                                        }       
-                                    }];
-}
+__weak typeof(self) weakSelf = self;
+    
+    [TYRZSDK getAuthorizationWithAuthViewController:weakSelf.authVC completion:^(NSDictionary * _Nonnull sender) {
+        
+        NSLog(@"授权登录结果:%@",sender);
+        [weakSelf.authVC dismissViewControllerAnimated:YES completion:^{
+            [weakSelf showInfo:sender];
+        }];
+    }];
 ```
 
 </br>
@@ -285,8 +260,6 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 ```
 {
-    authType = "1";
-    authTypeDesc = "WIFI网关鉴权";
     openid = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
     resultCode = 103000;
     token = 84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9;
@@ -297,312 +270,32 @@ SDK自动弹出登录缓冲界面（图一，<font  style="color:blue; font-styl
 
 ## 2.4. 隐式登录
 
-### 2.4.1. 方法描述
-
-**功能**
-
-本方法目前只能用于实现**本机号码校验**功能。开发者通过隐式登录方法，无授权弹窗，可获取到token和openID（需在开放平台勾选相关能力），应用服务端凭token向SDK服务端请求校验是否本机号码。隐式取号失败后，不支持短信上行和短信验证码二次验证。注：隐式登录返回的token无法通过`获取用户信息接口`换取手机号码，只支持通过`本机号码校验接口`校验用户手机号码身份，否则会报错。
-
-**方法处理逻辑**
-
-![](image/imp_process.png)
-
-**原型**
-
-`TYRZUILogin -- getTokenImpWithComplete:`
+本SDK不再单独提供隐式登录方法，开发者如果需要使用本SDK实现隐式登录做本机号码校验，在调用授权登录方法时，将authVC对象传入值设为nil即可，具体可参考下述代码来实现：
 
 ```objective-c
-
-+ (void)getTokenImpWithComplete:(void (^)(id sender))complete
-
-```
-
-### 2.4.2 参数说明
-
-**请求参数**
-
-无
-
-</br>
-
-**响应参数**
-
-| 参数          | 类型       | 说明                                       | 是否必填  |
-| ----------- | -------- | ---------------------------------------- | ----- |
-| resultCode  | NSString | 返回相应的结果码                                 | 是     |
-| token       | NSString | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
-| authType    | NSString | 认证类型：0:其他；</br>1:WiFi下网关鉴权；</br>2:网关鉴权；</br>3:短信上行鉴权；</br>7:短信验证码登录 | 成功时必填 |
-| authTypeDes | NSString | 认证类型描述，对应authType                        | 成功时必填 |
-| OpenID      | NSString | 用户身份唯一标识（参数需在开放平台勾选相关能力后开放，如果勾选了一键登录能力，使用本方法时，不返回OpenID） | 成功返回  |
-
-
-
-### 2.4.3. 示例
-
-**响应示例代码**
-
-```
-{
-    authType = 2;
-    authTypeDesc = "网关鉴权";
-    desc = "隐式登录成功";
-    openId = "5rgDeYIx17GYxOhJoyHeSY8i9e_KvvBn0UPKsmUK7qmILyvQnhSE";
-    resultCode = 103000;
-    token = STsid0000001517206452171kMB0JzMSsrQNwm1046j1paEtNQhEIJyu;
-}
-```
-
-
-
-## 2.5. 短信验证码页面登录开关（此版本不提供）
-
-### 2.5.1. 方法描述
-
-**功能**
-
-该方法用于配置是否打开SDK自带的短信验证码服务，默认短信验证码服务是打开状态。SDK在两种情况会使用短信验证码登录：1、一键登录（网关取号）失败后，自动跳转到短验页面；2、在授权页面使用`切换账号`（见下图）后，用户可以选择使用非本机号码通过短信验证码登录账号。如果开发者需要自定义短信验证码页面，可将该方法的属性设置为YES。注：如果开发者没有把“`切换账号`”按钮隐藏，用户点击切换账号时，也可以跳转到SDK自带的短信验证码页面。
-
-![授权页](image\sms-1.png)
-
-</br>
-
-**原型**
-
-`TYRZUILogin -- setCustomSMS`
-
-```objective-c
-
-+ (void)enableCustomSMS:(BOOL)flag;
-
-```
-
-</br>
-
-### 2.5.2. 参数说明
-
-**请求参数**
-
-| 参数     | 类型   | 说明                                       | 是否必填   |
-| ------ | ---- | ---------------------------------------- | ------ |
-| enable | BOOL | NO时显式登录取号失败会跳转至短信验证码界面</br>YES时显式登录取号失败允许跳转到开发者自定的跳转页面，不会跳转到SDK自带的短信验证码界面</br> 默认值为NO | 是</br> |
-
-**响应参数**
-
-无
-
-</br>
-
-### 2.5.3. 示例
-
-**请求示例代码**
-
-```objective-c
-  [TYRZUILogin enableCustomSMS:NO];
-     __weak typeof(self) weakSelf = self;
-    [TYRZUILogin getTokenExpWithController:weakSelf
-                                  complete:^(id sender) {
-                                        NSString *resultCode = sender[@"resultCode"];
-                                        if ([resultCode isEqualToString:@"103000"]){ //返回成功执行的分支
-                                           //显式登录成功返回token
-                                           self.token = sender[@"token"]; 
-                                        }       
-                                    }];
-```
-
-</br>
-
-**响应示例代码**
-
-设置逻辑不返回
-
-## 2.6. 开发者自定义UI
-
-SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自定义，则使用SDK提供的默认样式，建议开发者按照开发者自定义规则个性化授权页面和短信验证页面：
-
-
-
-![授权页](image\auth-page.png)
-
-**注意：开发者不得通过任何技术手段，将授权页面的隐私栏、品牌露出内容隐藏、覆盖，对于接入移动认证SDK并上线的应用，我方会对上线的应用授权页面做审查，如果有出现未按要求设计授权页面，将隐私栏、品牌等UI隐去不可见的设计，我方有权将应用的登录功能下线。**
-
-### 2.6.1. 方法说明
-
-**功能**
-
-通过本方法，修改授权页的元素。其中，开发者可以通过customUIParams修改默认授权页面的元素；可以通过customViews添加开发者自定义UI，customViews可支持多个，可由开发者自定义该UI的显示位置（通过坐标设置）
-
-**原型**
-`TYRZUILogin -- customUIWithParams:customViews:`
-
-```objective-c
-+ (void)customUIWithParams:(NSDictionary *)customUIParams
-               customViews:(void(^)(UIView *customAreaView))customViews;
-```
-
-### 2.6.2. 参数说明
-
-**请求参数**
-
-| 参数           | 类型                                  | 说明                                                         | 是否必填 |
-| -------------- | ------------------------------------- | ------------------------------------------------------------ | -------- |
-| customUIParams | NSDictionary                          | 用户编辑自定义UI属性                                            | 否       |
-| customViews    | void(^)(NSDictionary *customAreaView) | 用户添加自定义控件（登录按钮下面区域 ）"authPage"取出生成的自定义View| 否       |
-
-**响应参数**
-
-无
-
-**customUIParams参数结构**
-
-1. 当UI元素不嵌套时（所属层级1），授权页面和短信验证码页面显示效果一致；
-2. 当UI元素嵌套时（所属层级2），根据嵌套的上级元素（**authPage、SMSPage、privacyProperty**），分别定义授权页面和短信验证码页面的显示效果；
-3. 部分UI元素仅支持在短信验证码或授权页面显示，这部分元素必须嵌套在相应的页面下
-4. 开发者如果不设置自定义元素，将使用系统默认UI
-5. 短信验证码页面不支持开发者添加自定义视图。
-
-| 键名称                 | 使用说明                                           | 值类型             | 是否可嵌套                    | 所属层级 |
-| ---------------------- | -------------------------------------------------- | ------------------ | ---------------------------------- | :------- |
-| authPage               | 授权页面                                          | NSDictionary       | 否                                 | 1        |
-| privacyProperty        | 隐私条款区域                                       | NSDictionary       | 否                                 | 1        |
-| navBgColr              | 导航栏背景色                                       | UIColor            | 否                                 | 1        |
-| navLeftImg             | 导航栏返回图标                                     | UIImage            | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2    |
-| navAttrTitle            | 导航栏文字                                         | NSAttributedString | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2   |
-| navRightItem           | 导航栏右侧控件                                     | UIButton           | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2     |
-| pageBgColr             | 页面背景颜色（背景颜色和图片属性只能同时存在一个） | UIColor            | 是，不嵌套时同时应用在授权和短验页(此版本无短验页) | 1/2      |
-| APPLogoOffsetY         | 图片LOGO的“Y”轴调整（与界面顶部的距离偏移量） | NSNumber            | 必须嵌套在authPage | 2  |
-| CMCCDescOffY             | 标识文案和小LOGO的 “Y”轴调整（LOGO图片底部的距离偏移量） | NSNumber   |必须嵌套在authPage | 2  |
-| numFieldOffY             | 号码框的“Y”轴调整（标识文案和小LOGO底部的距离偏移量） | NSNumber       | 必须嵌套在authPage |  2  |
-| loginBtnOffY             | 登录按钮的“Y”轴调整（号码框底部的距离偏移量） | NSNumber        | 必须嵌套在authPage | 2  |
-| logAbleButtonBgColr    | 登录按钮有效时颜色               | UIColor            | 必须嵌套在authPage | 2      |
-| logDisableButtonBgColr    | 登录按钮无效时颜色            | UIColor            | 必须嵌套在authPage | 2      |
-| logButtonText	         | 登录按钮文字                    | NSString           | 必须嵌套在authPage | 2      |
-| logButtonTextColr      | 登录按钮文字颜色                 | UIColor            | 必须嵌套在authPage | 2      |
-| cornerRadiusScale       | 登录按钮圆角半径系数（真实值为按钮高度除以/此系数） | NSNumber  | 必须嵌套在authPage  | 2    |
-| privacyCheckOnImg       | 隐私条款中的checkbox选中状态时的图片               | UIImage          | 必须嵌套在privacyProperty          | 2        |
-| privacyCheckOffImg     | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
-| privacyTextColr        | 隐私条款文字颜色                                   | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| checkBoxHidden     | 隐私条款中的checkbox未选中状态时的图片             | UIImage            | 必须嵌套在privacyProperty          | 2        |
-| termTextColr           | 开发者用户协议字体颜色                             | UIColor            | 必须嵌套在privacyProperty          | 2        |
-| termTextURL         | 用户自定义的条款页面链接                           | NSString           | 必须嵌套在privacyProperty          | 2        |
-| termTextContent        | 开发者用户协议文本内容                             | NSString           | 必须嵌套在privacyProperty          | 2        |
-| CMCCDescTextColr     | 移动认证描述字体颜色                          | UIColor           | 必须嵌套在authPage         | 2        |
-| numFieldTextColr       | 手机号码框文字颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
-| numFieldBgColr        | 手机号码框背景颜色                                 | UIColor            | 必须嵌套在authPage                 | 2        |
-| numFieldLeftText        | 手机号码框左侧文本内容                                 | NSString            | 必须嵌套在authPage                 | 2        |
-| APPLogo                | 应用logo                                           | UIImage            | 必须嵌套在authPage                 | 2        |
-| logoWidth              | logo图片宽                                         | NSNumber           | 必须嵌套在authPage                 | 2        |
-| logoHeight  | logo图片高                                                   | NSNumber           | 必须嵌套在authPage                 | 2        |
-| CMCCDescTextLogoImg     	 | 标识文案小图标LOGO            | UIImage               | 必须嵌套在authPage                 | 2        |
-| CMCCDescTextColr        | 标识文案文字颜色                | UIColor               | 必须嵌套在authPage                 | 2        |
-| sliderVHidden      | 号码框竖线隐藏,YES为隐藏,NO和默认为显示                          | NSNumber            | 必须嵌套在authPage                 | 2        |
-| sliderHHidden      | 号码框底部横线隐藏,YES为隐藏,NO和默认为显示                        | NSNumber            | 必须嵌套在authPage                 | 2        |
-| privacyTextSize      | 隐私协议字体大小                        | NSNumber            | 必须嵌套在authPage                 | 2        |
-
-**使用示例**
-
-``` objective-c
-- (NSDictionary *)getParamsDictMG{
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:1];
-    NSAttributedString *navTitle = [[NSAttributedString alloc] initWithString:@"芒果TV" attributes:@{NSFontAttributeName:kLabelFontSize(18),NSForegroundColorAttributeName:[UIColor whiteColor]}];
-    UIImage *leftIcon =  [UIImage imageNamed:@"title_back"];//大图显示整个导航栏有问题（要控制左右导航栏图标的大小）;
+//隐式登录实现示例
+-(void)loginImplicity{
+    __weak typeof(self) weakSelf = self;
     
-    params[@"navBgColr"] = [UIColor whiteColor];
-    UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [rightBtn setTitle:@"注册" forState:UIControlStateNormal];
-    [rightBtn sizeToFit];
-    [rightBtn setTitleColor:[UIColor grayColor] forState:(UIControlStateNormal)];
-    rightBtn.titleLabel.font = kLabelFontSize(16);
-    [rightBtn addTarget:self action:@selector(rightAciton:) forControlEvents:UIControlEventTouchUpInside];
-    UIImage *logoImage = [UIImage imageNamed:@"芒果"];
-    params[@"navAttrTitle"] = navTitle;
-    params[@"navLeftImg"] = leftIcon;
-    //    params[@"pageBgColr"] = [UIColor redColor],
-    //    params[@"logDisableButtonBgColr"] = hexColor(0xdddddd);
-    
-    params[@"authPage"] = @{
-                            @"CMCCDescTextLogoImg":[UIImage imageNamed:@"盾牌"],
-                            @"CMCCDescTextColr":[UIColor grayColor],
-                            @"navAttrTitle":navTitle,
-                            @"navLeftImg":leftIcon,
-                            @"navRightItem":rightBtn,
-                            @"APPLogo":logoImage,
-                            //@"numFieldBgColr":hexColor(0xeeeeee),
-                            //@"numFieldTextColr":[UIColor redColor],
-                            @"numFieldLeftText":@"中国+86",
-                            @"logAbleButtonBgColr":hexColor(0xF8772B),
-                            @"logButtonTextColr":[UIColor whiteColor],
-                            @"logDisableButtonBgColr":hexColor(0xdddddd),
-                            @"logButtonText":@"手机号码一键登录",
-                            
-                            @"logoWidth":@(100),
-                            @"logoHeight":@(100),
-                            //@"sliderVHidden":@(YES),
-                            //@"sliderHHidden":@(YES),
-                            //@"APPLogoOffsetY":@(100),
-                            //@"CMCCDescOffY":@(100),
-                            //@"numFieldOffY":@(30),
-                            @"loginBtnOffY":@(10),
-                            @"cornerRadiusScale":@(2),
-                            };
-    params[@"privacyProperty"] = @{
-                                   //@"privacyCheckOnImg":[UIImage imageNamed:@"(weibo)_SFont.CN"],
-                                   //@"privacyCheckOffImg":[UIImage imageNamed:@"(WeChat)_SFont.CN.png"],
-                                   //@"privacyTextColr":hexColor(0x24C2AF),
-                                   //@"privacyTextSize":@(13),
-                                   @"termTextColr":hexColor(0xF8772B),
-                                   @"checkBoxHidden":@(YES),
-                                   //@"termTextContent":@"美团用户协议",
-                                   //@"termTextURL":@"dev.10086.cn",
-                                   };
-    return [NSDictionary dictionaryWithDictionary:params];
-    
-}
-
-SDK的api方法调用：
-    [TYRZUILogin customUIWithParams:[self getParamsDictMG] customViews:^(NSDictionary *customAreaView) {
-        //此处将自定义的视图加进对应页面的View
-        if (customAreaView[@"authPage"]) {
-            //authPage为授权页面的键名
-            UIView *authView = customAreaView[@"authPage"];
-            if (type==0) {
-                [weakself customShareButtonsWithView:authView];
-            }else{
-                [weakself customMGViewButtonsWithView:authView];
+    // 1.调用取号方法
+    [TYRZSDK getPhonenumberWithTimeout:8 completion:^(NSDictionary * _Nonnull sender){
+        if ([sender[@"resultCode"] isEqualToString:SUCCESSCODE]) {
+            NSLog(@"取号成功:%@",sender);
+     
+    // 2.调用授权方法
+    [TYRZSDK getAuthorizationWithAuthViewController:nil completion:^(NSDictionary * _Nonnull sender) {
+        [weakSelf showInfo:sender];
             }
+    ];
+        } else {
+            NSLog(@"取号失败:%@",sender);
+            [weakSelf showInfo:sender];
         }
     }];
-
+}
 ```
 
 
-
-## 2.7. 获取SDK版本号
-
-供接入方区分SDK的版本号，便于反馈SDK的相关信息
-
-### 2.7.1. 方法说明
-
-**功能**
-
-获取SDK版本号
-
-**原型**
-
-``` objective-c
-
-@property (nonatomic,class,readonly) NSString *sdkVersion;
-
-```
-
-**调用示例**
-
-``` objective-c
-
-NSString *sdkVersion = TYRZUILogin.sdkVersion;
-
-```
-
-<div STYLE="page-break-after: always;"></div>
 
 # 3. 平台接口说明
 
