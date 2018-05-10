@@ -46,8 +46,9 @@ sdk技术问题沟通QQ群：609994083</br>
 根据SDK内部提供的UAAuthViewController类，直接创建控制器或继承该类创建其子类控制器，进行自定义布局登录页。
 调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
 
-以下提供四种方式的示例代码
-**方式一：直接创建UAAuthViewController控制器，授权页前置**
+以下提供四种方式的示例代码，供开发者参考：
+</br>
+**示例代码1：直接创建UAAuthViewController控制器，授权页前置**
 ```objective-c
 -(void)preplan{
     // 1、自定义布局一键登录授权页
@@ -94,7 +95,7 @@ sdk技术问题沟通QQ群：609994083</br>
             weakSelf.securityPhoneLable.text = sender[@"securityphone"];
         } else {
             NSLog(@"取号失败:%@",sender);
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            [weakSelf.authVC dismissViewControllerAnimated:YES completion:nil];
         }
     }];
 }
@@ -113,7 +114,7 @@ sdk技术问题沟通QQ群：609994083</br>
 }
 ```
 
-**方式二：直接创建UAAuthViewController控制器，授权页后置**
+**示例代码2：直接创建UAAuthViewController控制器，授权页后置**
 ```objective-c
 -(void)postposition{
     // 1、调用取号方法
@@ -177,45 +178,158 @@ sdk技术问题沟通QQ群：609994083</br>
         [weakSelf.authVC dismissViewControllerAnimated:YES completion:nil];
     }];
 }
+
+```
+**示例代码3：继承UAAuthViewController创建控制器，授权页前置**
+```objective-c
+-(void)preplan{
+    // 1、创建一键登录授权页控制器
+    // CustomAuthViewController是继承UAAuthViewController的子类
+    CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:authVC];
+    nav.navigationBar.translucent = NO;
+    nav.navigationBar.barStyle = UIBarStyleBlack;
+    nav.navigationBar.barTintColor = [UIColor blueColor];
+    nav.navigationBar.tintColor = [UIColor whiteColor];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+// CustomAuthViewController.m文件里:
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self setupUI];
+    [self getPhonenumber];
+}
+
+// 自定义布局UI控件
+-(void)setupUI{
+    //  SecurityPhoneLable
+    CGFloat maginX = 50.f;
+    CGFloat width = authVC.view.frame.size.width;
+    UILabel *securityPhoneLable = [[UILabel alloc] init];
+    securityPhoneLable.textAlignment = NSTextAlignmentCenter;
+    securityPhoneLable.textColor = [UIColor redColor];
+    securityPhoneLable.frame = CGRectMake(maginX, 100, width-2*maginX, 40);
+    self.securityPhoneLable = securityPhoneLable;
+    [self.view addSubview:securityPhoneLable];
     
-```
-**方式三：继承UAAuthViewController创建控制器，授权页前置**
-```objective-c
+    // AuthLoginButton
+    UIButton *authButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [authButton setTitle:@"授权登录" forState:UIControlStateNormal];
+    authButton.layer.cornerRadius = 4;
+    authButton.layer.masksToBounds = YES;
+    authButton.frame = CGRectMake(maginX, CGRectGetMaxY(securityPhoneLable.frame)+50, width-2*maginX, 40);
+    authButton.backgroundColor = [UIColor orangeColor];
+    [authButton addTarget:self action:@selector(authorizeLoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:authButton];
+}
 
-```
-**方式四：继承UAAuthViewController创建控制器，授权页后置**
-```objective-c
-```
-
-```objective-c
-/**
- 取号登录
- */
-- (void)showImplicitLogin {
-    [TYRZUILogin preGetPhonenumber:^(id sender) {
-        NSNumber *result = sender[@"resultCode"];
-        if (result.boolValue) {
-            NSLog(@"预取号成功");
-            [TYRZUILogin loginExplicitly:self complete:^(id sender) {
-                NSLog(@"显式登录:%@",sender);
-                NSString *resultCode = sender[@"resultCode"];
-                self.token = sender[@"token"];
-                NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:sender];
-                if ([resultCode isEqualToString:SUCCESSCODE
-                     ]) {
-                    result[@"result"] = @"获取token成功";
-                } else {
-                    result[@"result"] = @"获取token失败";
-                }
-                [self showInfo:result];
-            }];
+// 2、调用取号方法
+-(void)getPhonenumber{
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"取号成功:%@",sender);
+            // 显示手机号码掩码
+            weakSelf.securityPhoneLable.text = sender[@"securityphone"];
         } else {
-            NSLog(@"预取号失败");
+            NSLog(@"取号失败:%@",sender);
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
         }
     }];
 }
 
+// 3、授权登录按钮点击事件，调用授权方法
+-(void)authorizeLoginButtonClick{
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getAuthorizationWithAuthViewController:weakSelf.authVC completion:^(NSDictionary * _Nonnull sender) {
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"授权登录成功:%@",sender);
+        } else {
+            NSLog(@"授权登录失败:%@",sender);
+        }
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+    }];
+}
+
 ```
+
+**示例代码4：继承UAAuthViewController创建控制器，授权页后置**
+```objective-c
+-(void)postposition{
+    // 1、调用取号方法
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"取号成功:%@",sender);
+            // 取号成功则创建授权页
+            [weakSelf showAuthVC:sender];
+        } else {
+            NSLog(@"取号失败:%@",sender);
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
+}
+
+-(void)showAuthVC:(NSDictionary *)dict{
+    // 2、创建一键登录授权页控制器
+    // CustomAuthViewController是继承UAAuthViewController的子类
+    CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
+    authVC.securityPhone =dict[@"securityphone"]; //手机码掩码，传值
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:authVC];
+    nav.navigationBar.translucent = NO;
+    nav.navigationBar.barStyle = UIBarStyleBlack;
+    nav.navigationBar.barTintColor = [UIColor blueColor];
+    nav.navigationBar.tintColor = [UIColor whiteColor];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+// CustomAuthViewController.m文件里:
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self setupUI];
+    self.securityPhoneLable.text = self.securityPhone;
+}
+
+// 自定义布局UI控件
+-(void)setupUI{
+    //  SecurityPhoneLable
+    CGFloat maginX = 50.f;
+    CGFloat width = authVC.view.frame.size.width;
+    UILabel *securityPhoneLable = [[UILabel alloc] init];
+    securityPhoneLable.textAlignment = NSTextAlignmentCenter;
+    securityPhoneLable.textColor = [UIColor redColor];
+    securityPhoneLable.frame = CGRectMake(maginX, 100, width-2*maginX, 40);
+    self.securityPhoneLable = securityPhoneLable;
+    [self.view addSubview:securityPhoneLable];
+    
+    // AuthLoginButton
+    UIButton *authButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [authButton setTitle:@"授权登录" forState:UIControlStateNormal];
+    authButton.layer.cornerRadius = 4;
+    authButton.layer.masksToBounds = YES;
+    authButton.frame = CGRectMake(maginX, CGRectGetMaxY(securityPhoneLable.frame)+50, width-2*maginX, 40);
+    authButton.backgroundColor = [UIColor orangeColor];
+    [authButton addTarget:self action:@selector(authorizeLoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:authButton];
+}
+
+// 3、授权登录按钮点击事件，调用授权方法
+-(void)authorizeLoginButtonClick{
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getAuthorizationWithAuthViewController:weakSelf.authVC completion:^(NSDictionary * _Nonnull sender) {
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"授权登录成功:%@",sender);
+        } else {
+            NSLog(@"授权登录失败:%@",sender);
+        }
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+    }];
+}
+
+```
+
+</br>
 
 <div STYLE="page-break-after: always;"></div>
 
