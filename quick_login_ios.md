@@ -35,7 +35,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+
      [TYRZSDK registerAppId:APPID appKey:APPKEY];
     return YES;
 }
@@ -43,7 +43,149 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **第二步：**
 
-在需要用到登录的地方调用登录接口即可，以下是取号登录示例
+根据SDK内部提供的UAAuthViewController类，直接创建控制器或继承该类创建其子类控制器，进行自定义布局登录页。
+调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
+
+以下提供四种方式的示例代码
+**方式一：直接创建UAAuthViewController控制器，授权页前置**
+```objective-c
+-(void)preplan{
+    // 1、自定义布局一键登录授权页
+    UAAuthViewController * authVC = [[UAAuthViewController alloc]init];
+    authVC.view.backgroundColor = UIColor.whiteColor;
+    self.authVC = authVC;
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:authVC];
+    nav.navigationBar.translucent = NO;
+    nav.navigationBar.barStyle = UIBarStyleBlack;
+    nav.navigationBar.barTintColor = [UIColor blueColor];
+    nav.navigationBar.tintColor = [UIColor whiteColor];
+
+    //  SecurityPhoneLable
+    CGFloat maginX = 50.f;
+    CGFloat width = authVC.view.frame.size.width;
+    UILabel *securityPhoneLable = [[UILabel alloc] init];
+    securityPhoneLable.textAlignment = NSTextAlignmentCenter;
+    securityPhoneLable.textColor = [UIColor redColor];
+    securityPhoneLable.frame = CGRectMake(maginX, 100, width-2*maginX, 40);
+    self.securityPhoneLable = securityPhoneLable;
+    [authVC.view addSubview:securityPhoneLable];
+    
+    // AuthLoginButton
+    UIButton *authButton = [UIButton buttonWithType:UIButtonTypeCustom];
+     authButton.userInteractionEnabled = NO;
+    [authButton setTitle:@"授权登录" forState:UIControlStateNormal];
+    authButton.layer.cornerRadius = 4;
+    authButton.layer.masksToBounds = YES;
+    authButton.frame = CGRectMake(maginX, CGRectGetMaxY(securityPhoneLable.frame)+50, width-2*maginX, 40);
+    authButton.backgroundColor = [UIColor grayColor];
+    [authButton addTarget:self action:@selector(authorizeLoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [authVC.view addSubview:authButton];
+    
+    [self presentViewController:nav animated:YES completion:nil];
+    
+    // 2、调用取号方法
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+        authButton.userInteractionEnabled = YES;
+        authButton.backgroundColor = [UIColor orangeColor];
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"取号成功:%@",sender);
+            // 显示手机号码掩码
+            weakSelf.securityPhoneLable.text = sender[@"securityphone"];
+        } else {
+            NSLog(@"取号失败:%@",sender);
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
+}
+
+// 3、授权登录按钮点击事件，调用授权方法
+-(void)authorizeLoginButtonClick{
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getAuthorizationWithAuthViewController:weakSelf.authVC completion:^(NSDictionary * _Nonnull sender) {
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"授权登录成功:%@",sender);
+        } else {
+            NSLog(@"授权登录失败:%@",sender);
+        }
+        [weakSelf.authVC dismissViewControllerAnimated:YES completion:nil];
+    }];
+}
+```
+
+**方式二：直接创建UAAuthViewController控制器，授权页后置**
+```objective-c
+-(void)postposition{
+    // 1、调用取号方法
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"取号成功:%@",sender);
+            // 取号成功则创建授权页
+            [weakSelf showAuthVC:sender];
+        } else {
+            NSLog(@"取号失败:%@",sender);
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
+}
+
+-(void)showAuthVC:(NSDictionary *)dict{
+    // 2、创建自定义布局一键登录授权页
+    UAAuthViewController * authVC = [[UAAuthViewController alloc]init];
+    authVC.view.backgroundColor = UIColor.whiteColor;
+    self.authVC = authVC;
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:authVC];
+    nav.navigationBar.translucent = NO;
+    nav.navigationBar.barStyle = UIBarStyleBlack;
+    nav.navigationBar.barTintColor = [UIColor blueColor];
+    nav.navigationBar.tintColor = [UIColor whiteColor];
+    
+    //  SecurityPhoneLable
+    CGFloat maginX = 50.f;
+    CGFloat width = authVC.view.frame.size.width;
+    UILabel *securityPhoneLable = [[UILabel alloc] init];
+    securityPhoneLable.text = dict[@"securityphone"]; // 显示手机号码掩码
+    securityPhoneLable.textAlignment = NSTextAlignmentCenter;
+    securityPhoneLable.textColor = [UIColor redColor];
+    securityPhoneLable.frame = CGRectMake(maginX, 100, width-2*maginX, 40);
+    self.securityPhoneLable = securityPhoneLable;
+    [authVC.view addSubview:securityPhoneLable];
+    
+    // AuthLoginButton
+    UIButton *authButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [authButton setTitle:@"授权登录" forState:UIControlStateNormal];
+    authButton.layer.cornerRadius = 4;
+    authButton.layer.masksToBounds = YES;
+    authButton.frame = CGRectMake(maginX, CGRectGetMaxY(securityPhoneLable.frame)+50, width-2*maginX, 40);
+    authButton.backgroundColor = [UIColor orangeColor];
+    [authButton addTarget:self action:@selector(authorizeLoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [authVC.view addSubview:authButton];
+    
+    [self presentViewController:nav animated:YES completion:nil];   
+  } 
+  
+  // 3、授权登录按钮点击事件，调用授权方法
+-(void)authorizeLoginButtonClick{
+    __weak typeof(self) weakSelf = self;
+    [TYRZSDK getAuthorizationWithAuthViewController:weakSelf.authVC completion:^(NSDictionary * _Nonnull sender) {
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"授权登录成功:%@",sender);
+        } else {
+            NSLog(@"授权登录失败:%@",sender);
+        }
+        [weakSelf.authVC dismissViewControllerAnimated:YES completion:nil];
+    }];
+}
+    
+```
+**方式三：继承UAAuthViewController创建控制器，授权页前置**
+```objective-c
+
+```
+**方式四：继承UAAuthViewController创建控制器，授权页后置**
+```objective-c
+```
 
 ```objective-c
 /**
@@ -92,7 +234,6 @@ sdk技术问题沟通QQ群：609994083</br>
 ```objective-c
 + (void)registerAppId:(NSString *)appId appKey:(NSString *)appKey;
 ```
-
 </br>
 
 ### 2.1.2. 参数说明
@@ -128,7 +269,6 @@ sdk技术问题沟通QQ群：609994083</br>
 ```objective-c
 + (void)getPhonenumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
 ```
-
 </br>
 
 ### 2.2.2. 参数说明
@@ -188,7 +328,6 @@ sdk技术问题沟通QQ群：609994083</br>
 
 1. 创建加载SDK内部提供的UAAuthViewController空白模板控制器（或继承UAAuthViewController来创建登录页控制器）
 2. 用户点击登录授权后返回取号凭证等参数
-
 </br>
 
 **原型**
@@ -196,7 +335,6 @@ sdk技术问题沟通QQ群：609994083</br>
 ```objective-c
 + (void)getAuthorizationWithAuthViewController:(UAAuthViewController *_Nullable)authVC completion:(void (^)(NSDictionary *sender))completion;
 ```
-
 </br>
 
 ### 2.3.2. 参数说明
@@ -271,6 +409,7 @@ sdk技术问题沟通QQ群：609994083</br>
 }
 ```
 
+
 # 3. 平台接口说明
 
 ## 3.1. 获取用户信息接口
@@ -279,7 +418,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ### 3.1.1. 业务流程
 
-SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会自动跳转到SDK的短信验证码页面（如果有配置）或者返回错误码
+SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会返回错误码
 
 ![](image/19.png)
 
@@ -360,7 +499,7 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 ### 3.2.1. 业务流程
 
-SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会自动跳转到SDK的短信验证码页面（如果有配置）或者返回错误码。**注：本业务目前仅支持中国移动号码，建议开发者在使用该功能前，判断当前用户手机运营商**
+SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会返回错误码。**注：本业务目前仅支持中国移动号码，建议开发者在使用该功能前，判断当前用户手机运营商**
 
 ![1](image\1.1.png)
 
@@ -482,14 +621,16 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 | 102208 | SDK请求参数错误                   |
 | 102302 | 没有进行初始化参数                   |
 | 102506 | 请求出错                        |
-| 102507 | 请求超时，预取号、buffer页取号、登录时请求超时  |
-| 103108 | 验证码错误                       |
+| 102507 | 请求超时  |
 | 103125 | 手机号码格式错误                    |
 | 103126 | 手机号码不存在                     |
-| 103901 | 短信验证码下发次数到达上限（每用户每app每天10次） |
 | 105001 | 联通取号失败                      |
 | 200002 | 手机未安装SIM卡                   |
-| 200009 | Bundle ID与服务器填写的不一致         |
+| 200009 | Bundle ID与服务器填写的不一致         |
+| 200034 | 取号token失效       |
+| 200036 | 取号失败 |
+| 200041 | 应用未授权 |
+| 105302 | AppId不在白名单|
 
 </br>
 
