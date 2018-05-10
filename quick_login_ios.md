@@ -43,8 +43,8 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **第二步：**
 
-根据SDK内部提供的UAAuthViewController类，直接创建控制器或继承该类创建其子类控制器，进行自定义布局登录页。
-调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
+1、根据SDK内部提供的UAAuthViewController类，直接创建控制器或继承该类创建其子类控制器，进行自定义布局登录页。</br>
+2、调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
 
 以下提供四种方式的示例代码，供开发者参考：
 </br>
@@ -113,6 +113,7 @@ sdk技术问题沟通QQ群：609994083</br>
     }];
 }
 ```
+</br>
 
 **示例代码2：直接创建UAAuthViewController控制器，授权页后置**
 ```objective-c
@@ -180,6 +181,8 @@ sdk技术问题沟通QQ群：609994083</br>
 }
 
 ```
+</br>
+
 **示例代码3：继承UAAuthViewController创建控制器，授权页前置**
 ```objective-c
 -(void)preplan{
@@ -253,6 +256,7 @@ sdk技术问题沟通QQ群：609994083</br>
 }
 
 ```
+</br>
 
 **示例代码4：继承UAAuthViewController创建控制器，授权页后置**
 ```objective-c
@@ -328,6 +332,7 @@ sdk技术问题沟通QQ群：609994083</br>
 }
 
 ```
+
 
 </br>
 
