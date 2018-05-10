@@ -2,14 +2,13 @@
 
 sdk技术问题沟通QQ群：609994083</br>
 
-**注：SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会自动跳转到SDK的短信验证码页面或短信上行取号（如果有配置）或者返回错误码**</br>
+**注：SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会返回错误码**</br>
 
 ## 1.1. 环境配置及发布
 
 1. xcode版本需使用9.0以上，否则会报错
 2. 导入统一认证framework，直接将统一认证`TYRZSDK.framework`拖到项目中
 3. 在Xcode中找到`TARGETS-->Build Setting-->Linking-->Other Linker Flags`在这选项中需要添加`-ObjC`
-4. 添加bundle资源包 TARGETS -->Build Phases -->Copy Bundle Resources --> 点击 "+" --> Add Other --> TYRZSDK.frameWork --> Resource.bundle -->Open 即可
 
 </br>
 
@@ -37,18 +36,18 @@ sdk技术问题沟通QQ群：609994083</br>
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-     [TYRZUILogin initializeWithAppId:APPID appKey:APPKEY];
+     [TYRZSDK registerAppId:APPID appKey:APPKEY];
     return YES;
 }
 ```
 
 **第二步：**
 
-在需要用到登录的地方调用登录接口即可，以下是预取号登录示例
+在需要用到登录的地方调用登录接口即可，以下是取号登录示例
 
 ```objective-c
 /**
- 预取号登录
+ 取号登录
  */
 - (void)showImplicitLogin {
     [TYRZUILogin preGetPhonenumber:^(id sender) {
@@ -86,7 +85,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **功能**
 
-用于初始化appid、appkey设置。
+用于初始化appId、appKey设置。
 
 **原型**
 
@@ -127,9 +126,7 @@ sdk技术问题沟通QQ群：609994083</br>
 **原型**
 
 ```objective-c
-+ (void)getPhonenumberWithTimeout:
-				(NSTimeInterval)duration completion:
-						(void (^)(NSDictionary * sender))completion;
++ (void)getPhonenumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
 ```
 
 </br>
@@ -141,7 +138,7 @@ sdk技术问题沟通QQ群：609994083</br>
 | 参数       | 类型           | 说明                                    |
 | ---------- | -------------- | --------------------------------------- |
 | duration   | NSTimeInterval | 自定义取号超时时间（默认8秒），单位：秒 |
-| completion | UAFinishBlock  | 取号回调                                |
+| completion | Block  | 取号回调                                |
 
 **响应参数**
 
@@ -158,25 +155,13 @@ sdk技术问题沟通QQ群：609994083</br>
 **请求示例代码**
 
 ```objective-c
-_weak typeof(self) weakSelf = self;
-[TYRZSDK getPhonenumberWithTimeout: 8 completion: ^ (NSDictionary * _Nonnull sender) {
-
-	[self.indicatorView stopAnimating];
-	[self.indicatorView removeFromSuperview];
-
-	if ([sender[@ "resultCode"] isEqualToString: SUCCESSCODE]) {
-
-		NSLog(@ "%@", [NSThread currentThread]);
-		NSLog(@ "取号成功:%@", sender);
-		// 取号成功则加载authVC自定义布局并拉起
-		[weakSelf showAuthVC: sender];
-
-	} else {
-
-		NSLog(@ "取号失败:%@", sender);
-		[weakSelf showInfo: sender];
-	}
-}];
+ [TYRZSDK getPhonenumberWithTimeout: 8.0 completion: ^ (NSDictionary * _Nonnull sender) {
+        if ([sender[@ "resultCode"] isEqualToString: @"103000"]) {
+            NSLog(@ "取号成功:%@", sender);
+        } else {
+            NSLog(@ "取号失败:%@", sender);
+        }
+    }];
 ```
 
 </br>
