@@ -86,7 +86,7 @@ sdk技术问题沟通QQ群：609994083</br>
     
     // 2、调用取号方法
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhoneNumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         authButton.userInteractionEnabled = YES;
         authButton.backgroundColor = [UIColor orangeColor];
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
@@ -120,7 +120,7 @@ sdk技术问题沟通QQ群：609994083</br>
 -(void)postposition{
     // 1、调用取号方法
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhoneNumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 取号成功则创建授权页
@@ -230,7 +230,7 @@ sdk技术问题沟通QQ群：609994083</br>
 // 2、调用取号方法
 -(void)getPhonenumber{
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhoneumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 显示手机号码掩码
@@ -263,7 +263,7 @@ sdk技术问题沟通QQ群：609994083</br>
 -(void)postposition{
     // 1、调用取号方法
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhoneNumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 取号成功则创建授权页
@@ -386,7 +386,7 @@ sdk技术问题沟通QQ群：609994083</br>
 **原型**
 
 ```objective-c
-+ (void)getPhonenumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
++ (void)getPhoneumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
 ```
 </br>
 
@@ -414,7 +414,7 @@ sdk技术问题沟通QQ群：609994083</br>
 **请求示例代码**
 
 ```objective-c
- [TYRZSDK getPhonenumberWithTimeout: 8000 completion: ^ (NSDictionary * _Nonnull sender) {
+ [TYRZSDK getPhoneNumberWithTimeout: 8000 completion: ^ (NSDictionary * _Nonnull sender) {
         if ([sender[@ "resultCode"] isEqualToString: @"103000"]) {
             NSLog(@ "取号成功:%@", sender);
         } else {
@@ -510,7 +510,7 @@ sdk技术问题沟通QQ群：609994083</br>
 ```objective-c
 -(void)loginImplicity{
     // 1.调用取号方法
-    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhoneumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 2.调用授权方法
