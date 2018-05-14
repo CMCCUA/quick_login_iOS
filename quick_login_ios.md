@@ -533,7 +533,7 @@ SDK**登录授权页**部分元素可供开发者编辑，如开发者不需自�
                                               @"UnCheckedImage":logoImage,
                                               @"CheckBoxImg":[UIImage imageNamed:@"checkOn"],//隐私条款的checkbox
                                               @"UserServiceText":@"爱奇艺户协议",//开发者的协议
-                                              @"privateTextColr":[UIColor orangeColor],// 协议字体颜色
+                                              @"privacyTextColr":[UIColor orangeColor],// 协议字体颜色
                                               @"termTextColr":[UIColor blueColor],//条款字体颜色
                                               @"privateTextOffsetY":@20,
                                               @"privateTextURL":@"http://dev.10086.cn/",
