@@ -86,7 +86,7 @@ sdk技术问题沟通QQ群：609994083</br>
     
     // 2、调用取号方法
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         authButton.userInteractionEnabled = YES;
         authButton.backgroundColor = [UIColor orangeColor];
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
@@ -120,7 +120,7 @@ sdk技术问题沟通QQ群：609994083</br>
 -(void)postposition{
     // 1、调用取号方法
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 取号成功则创建授权页
@@ -230,7 +230,7 @@ sdk技术问题沟通QQ群：609994083</br>
 // 2、调用取号方法
 -(void)getPhonenumber{
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 显示手机号码掩码
@@ -263,7 +263,7 @@ sdk技术问题沟通QQ群：609994083</br>
 -(void)postposition{
     // 1、调用取号方法
     __weak typeof(self) weakSelf = self;
-    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 取号成功则创建授权页
@@ -396,7 +396,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 | 参数       | 类型           | 说明                                    |
 | ---------- | -------------- | --------------------------------------- |
-| duration   | NSTimeInterval | 自定义取号超时时间（默认8秒），单位：秒 |
+| duration   | NSTimeInterval | 自定义取号超时时间（默认8000毫秒），单位：毫秒 |
 | completion | Block  | 取号回调                                |
 
 **响应参数**
@@ -414,7 +414,7 @@ sdk技术问题沟通QQ群：609994083</br>
 **请求示例代码**
 
 ```objective-c
- [TYRZSDK getPhonenumberWithTimeout: 8.0 completion: ^ (NSDictionary * _Nonnull sender) {
+ [TYRZSDK getPhonenumberWithTimeout: 8000 completion: ^ (NSDictionary * _Nonnull sender) {
         if ([sender[@ "resultCode"] isEqualToString: @"103000"]) {
             NSLog(@ "取号成功:%@", sender);
         } else {
@@ -473,7 +473,7 @@ sdk技术问题沟通QQ群：609994083</br>
 | ---------- | -------- | ------------------------------------------------------------ | ---------- |
 | resultCode | NSString | 返回相应的结果码                                             | 是         |
 | token      | NSString | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
-| openID     | NSString | 成功时返回：用户身份唯一标识                                 | 成功时必填 |
+| openId     | NSString | 成功时返回：用户身份唯一标识 （隐式登录不返回openId字段）        | 成功时必填 |
 | desc       | NSString | 调用描述                                                     | 否         |
 
 </br>
@@ -495,7 +495,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ```
 {
-    openid = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
+    openId = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
     resultCode = 103000;
     token = 84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9;
 }
@@ -510,7 +510,7 @@ sdk技术问题沟通QQ群：609994083</br>
 ```objective-c
 -(void)loginImplicity{
     // 1.调用取号方法
-    [TYRZSDK getPhonenumberWithTimeout:8.0 completion:^(NSDictionary * _Nonnull sender){
+    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
             // 2.调用授权方法
