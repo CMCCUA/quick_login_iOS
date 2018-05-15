@@ -43,11 +43,8 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **第二步：**
 
-1、根据SDK内部提供的UAAuthViewController类，直接创建控制器或继承该类创建其子类控制器，进行自定义布局登录页。</br>
+1、继承UAAuthViewController类并创建其子类控制器，进行授权页面设计布局和提供动画效果。</br>
 2、调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
-
-
-</br>
 
 <div STYLE="page-break-after: always;"></div>
 
@@ -156,16 +153,9 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **功能**
 
-<<<<<<< HEAD
 在应用弹出授权页的情况下，调用本方法可以成功获取取号凭证token。如果开发者需要**获取用户完整的手机号码**，调用该方法时，需要将正在运行的授权页面ViewController传入并获取相对应的token；如果开发者需要做**本机号码校验**，调用该方法时，ViewController参数传nil即可。
-=======
-本方法用于实现：
 
-1. 创建加载SDK内部提供的UAAuthViewController空白模板控制器（或继承UAAuthViewController来创建登录页控制器）
-2. 用户点击登录授权后返回取号凭证等参数
-3. 显式登录示例代码请看2.5
->>>>>>> f88fbcce93f7bff9fc260ebf76a1e031ec3f144b
-</br>
+**注：**在调用授权登录方法前，必须先调用取号方法，否则会取号失败！
 
 **原型**
 
@@ -198,61 +188,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ### 2.3.3. 示例
 
-**请求示例代码**
-
-```objective-c
- UAAuthViewController * authVC = [[UAAuthViewController alloc]init];
-    [TYRZSDK getAuthorizationWithAuthViewController:authVC completion:^(NSDictionary * _Nonnull sender) {
-        NSLog(@"授权登录结果:%@",sender);
-    }];
-```
-</br>
-
-**响应示例代码**
-
-```objective-c
-{
-    openId = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
-    resultCode = 103000;
-    token = 84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9;
-}
-```
-</br>
-
-## 2.4. 隐式登录
-
-本SDK不再单独提供隐式登录方法，开发者如果需要使用本SDK实现隐式登录做本机号码校验，在调用授权登录方法时，将authVC对象传入值设为nil即可，具体可参考下述代码来实现：
-
-```objective-c
--(void)loginImplicity{
-<<<<<<< HEAD
-// 1.调用取号方法
-    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
-=======
-    // 1.调用取号方法
-    [TYRZSDK getPhoneumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
->>>>>>> f88fbcce93f7bff9fc260ebf76a1e031ec3f144b
-        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
-            NSLog(@"取号成功:%@",sender);
-// 2.调用授权方法
-            [TYRZSDK getAuthorizationWithAuthViewController:nil completion:^(NSDictionary * _Nonnull sender) {
-                if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
-                    NSLog(@"隐式登录成功:%@",sender);
-                }else{
-                    NSLog(@"隐式登录失败:%@",sender);
-                }
-            }];
-        } else {
-            NSLog(@"取号失败:%@",sender);
-        }
-    }];
-}
-```
-</br>
-
-## 2.5. 显式登录
-</br>
-**示例代码：继承UAAuthViewController创建控制器**
+**完整一键登录调用示例**
 
 ```objective-c
 // 1、在登录场景里创建一键登录授权页控制器
@@ -309,7 +245,45 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 }
 
 //@end
+```
+</br>
 
+**响应示例代码**
+
+```objective-c
+{
+    openId = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
+    resultCode = 103000;
+    desc = 
+    token = 84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9;
+}
+```
+</br>
+
+## 2.4. 隐式登录
+
+本SDK不再单独提供隐式登录方法，开发者如果需要使用本SDK实现隐式登录做本机号码校验，在调用授权登录方法时，将authVC对象传入值设为nil即可，具体可参考下述代码来实现：
+
+```objective-c
+-(void)loginImplicity{
+// 1.调用取号方法
+    [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
+        if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+            NSLog(@"取号成功:%@",sender);
+            
+// 2.调用授权方法
+            [TYRZSDK getAuthorizationWithAuthViewController:nil completion:^(NSDictionary * _Nonnull sender) {
+                if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
+                    NSLog(@"隐式登录成功:%@",sender);
+                }else{
+                    NSLog(@"隐式登录失败:%@",sender);
+                }
+            }];
+        } else {
+            NSLog(@"取号失败:%@",sender);
+        }
+    }];
+}
 ```
 </br>
 
