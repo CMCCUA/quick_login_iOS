@@ -245,7 +245,6 @@ sdk技术问题沟通QQ群：609994083</br>
 </br>
 **示例代码：继承UAAuthViewController创建控制器**
 ```objective-c
-
 // 1、在登录场景里创建一键登录授权页控制器
 CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 [self presentViewController:authVC animated:YES completion:nil];
@@ -256,7 +255,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 
 @end
 
-// CustomAuthViewController.m文件里:
+
 @implementation CustomAuthViewController
 
 - (void)viewDidLoad {
