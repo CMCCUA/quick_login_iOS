@@ -443,10 +443,7 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **功能**
 
-本方法用于实现：
-
-1. 创建加载SDK内部提供的UAAuthViewController空白模板控制器（或继承UAAuthViewController来创建登录页控制器）
-2. 用户点击登录授权后返回取号凭证等参数
+在应用弹出授权页的情况下，调用本方法可以成功获取取号凭证token。如果开发者需要**获取用户完整的手机号码**，调用该方法时，需要将正在运行的授权页面ViewController传入并获取相对应的token；如果开发者需要做**本机号码校验**，调用该方法时，ViewController参数传nil即可。
 </br>
 
 **原型**
@@ -509,11 +506,11 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ```objective-c
 -(void)loginImplicity{
-    // 1.调用取号方法
+// 1.调用取号方法
     [TYRZSDK getPhonenumberWithTimeout:8000 completion:^(NSDictionary * _Nonnull sender){
         if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
             NSLog(@"取号成功:%@",sender);
-            // 2.调用授权方法
+// 2.调用授权方法
             [TYRZSDK getAuthorizationWithAuthViewController:nil completion:^(NSDictionary * _Nonnull sender) {
                 if ([sender[@"resultCode"] isEqualToString:@"103000"]) {
                     NSLog(@"隐式登录成功:%@",sender);
@@ -528,6 +525,23 @@ sdk技术问题沟通QQ群：609994083</br>
 }
 ```
 
+##2.5. 授权页规范
+
+移动认证一键登录产品由于需要将用户的手机号码信息返回给应用方，为了保证用户的知情权，不允许在用户不知情的情况下侵犯用户的个人隐私，同时，为了保证能力提供方的权利与义务，应用在做授权登录操作获取取号凭证前，必须先弹出授权页，告知用户当前操作会将用户的本机号码信息传递给应用。
+
+###2.5.1. 调用逻辑
+
+![](image/authPage.png)
+
+### 2.5.2. 页面规范细则
+
+1、页面必须包含登录按钮，授权登录方法`getPhonenumberWithTimeout`必须通过触发该按钮时调用；
+
+2、登录按钮文字描述必须包含“登录”或“注册”等文字，不得诱导用户授权；
+
+3、需要用户明确知悉使用本机号码作为登录账号。如果应用通过取号方法`getAuthorizationWithAuthViewController`获得手机号码掩码，并且将掩码显著的显示在授权页面上，授权页面可以不显示“本机号码”等文字，否则，必须应用必须在页面显著的位置告知用户正在使用“本机号码”作为账号登录或注册；
+
+4、必须在页面上显示移动认证协议条款名称“《中国移动认证服务条款》”，并且点击该条款时，能链接到移动认证服务条款页面地址 `http://wap.cmpassport.com/resources/html/contract.html`
 
 # 3. 平台接口说明
 
