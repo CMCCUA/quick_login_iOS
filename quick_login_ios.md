@@ -99,7 +99,7 @@ sdk技术问题沟通QQ群：609994083</br>
 **原型**
 
 ```objective-c
-+ (void)getPhoneumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
++ (void)getPhoneNumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
 ```
 </br>
 
