@@ -46,6 +46,153 @@ sdk技术问题沟通QQ群：609994083</br>
 1、根据SDK内部提供的UAAuthViewController类，直接创建控制器或继承该类创建其子类控制器，进行自定义布局登录页。</br>
 2、调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
 
+
+</br>
+
+<div STYLE="page-break-after: always;"></div>
+
+#2. SDK方法说明
+
+## 2.1. 初始化
+
+### 2.1.1. 方法描述
+
+**功能**
+
+用于初始化appId、appKey设置。
+
+**原型**
+
+```objective-c
++ (void)registerAppId:(NSString *)appId appKey:(NSString *)appKey;
+```
+</br>
+
+### 2.1.2. 参数说明
+
+**请求参数**
+
+
+| 参数     | 类型       | 说明       | 是否必填 |
+| ------ | -------- | -------- | ---- |
+| appID  | NSString | 应用的appid | 是    |
+| appKey | NSString | 应用密钥     | 是    |
+
+
+
+**响应参数**
+
+无
+
+</br>
+
+## 2.2. 取号
+
+
+### 2.2.1. 方法描述
+
+**功能**
+
+本方法用于发起取号请求，并返回用户当前网络环境是否具备取号条件。SDK将在后台完成网络判断、数据网络切换等内部操作并向网关请求申请获取用户本机号码。取号请求成功后，开发者就可以调用并弹出由开发者自定义布局的授权页面。
+
+
+**原型**
+
+```objective-c
++ (void)getPhoneumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
+```
+</br>
+
+### 2.2.2. 参数说明
+
+**请求参数**
+
+| 参数       | 类型           | 说明                                    |
+| ---------- | -------------- | --------------------------------------- |
+| duration   | NSTimeInterval | 自定义取号超时时间（默认8000毫秒），单位：毫秒 |
+| completion | Block  | 取号回调                                |
+
+**响应参数**
+
+| 参数          | 类型     | 说明                          |
+| ------------- | -------- | ----------------------------- |
+| resultCode    | NSString | 返回相应的结果码              |
+| desc          | NSString | 调用描述                      |
+| securityphone | NSString | 手机号码掩码，如“138XXXX0000” |
+
+</br>
+
+### 2.2.3. 示例
+
+**请求示例代码**
+
+```objective-c
+ [TYRZSDK getPhoneNumberWithTimeout: 8000 completion: ^ (NSDictionary * _Nonnull sender) {
+        if ([sender[@ "resultCode"] isEqualToString: @"103000"]) {
+            NSLog(@ "取号成功:%@", sender);
+        } else {
+            NSLog(@ "取号失败:%@", sender);
+        }
+    }];
+```
+
+</br>
+
+**响应示例代码**
+
+```
+{
+    resultCode = 103000;
+    desc = "success";
+    securityphone = "138XXXX0000"
+}
+```
+
+</br>
+
+## 2.3. 授权登录
+
+### 2.3.1. 方法描述
+
+**功能**
+
+本方法用于实现：
+
+1. 创建加载SDK内部提供的UAAuthViewController空白模板控制器（或继承UAAuthViewController来创建登录页控制器）
+2. 用户点击登录授权后返回取号凭证等参数
+</br>
+
+**原型**
+
+```objective-c
++ (void)getAuthorizationWithAuthViewController:(UAAuthViewController *_Nullable)authVC completion:(void (^)(NSDictionary *sender))completion;
+```
+</br>
+
+### 2.3.2. 参数说明
+
+**请求参数**
+
+| 参数     | 类型                 | 说明                                                         |
+| -------- | -------------------- | ------------------------------------------------------------ |
+| authVC   | UAAuthViewController | 授权页面，由开发者完成页面的设计布局。**当authVC传值为nil时，将不弹出授权页，登录方式为隐式登录** |
+| complete | Block        | 登录回调                                                     |
+
+</br>
+
+**响应参数**
+
+| 参数       | 类型     | 说明                                                         | 是否必填   |
+| ---------- | -------- | ------------------------------------------------------------ | ---------- |
+| resultCode | NSString | 返回相应的结果码                                             | 是         |
+| token      | NSString | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
+| openId     | NSString | 成功时返回：用户身份唯一标识 （隐式登录不返回openId字段）        | 成功时必填 |
+| desc       | NSString | 调用描述                                                     | 否         |
+
+</br>
+
+### 2.3.3. 示例
+
 以下提供四种方式的示例代码，供开发者参考：
 </br>
 **示例代码1：直接创建UAAuthViewController控制器，授权页前置**
@@ -331,174 +478,6 @@ sdk技术问题沟通QQ群：609994083</br>
     }];
 }
 
-```
-
-
-</br>
-
-<div STYLE="page-break-after: always;"></div>
-
-#2. SDK方法说明
-
-## 2.1. 初始化
-
-### 2.1.1. 方法描述
-
-**功能**
-
-用于初始化appId、appKey设置。
-
-**原型**
-
-```objective-c
-+ (void)registerAppId:(NSString *)appId appKey:(NSString *)appKey;
-```
-</br>
-
-### 2.1.2. 参数说明
-
-**请求参数**
-
-
-| 参数     | 类型       | 说明       | 是否必填 |
-| ------ | -------- | -------- | ---- |
-| appID  | NSString | 应用的appid | 是    |
-| appKey | NSString | 应用密钥     | 是    |
-
-
-
-**响应参数**
-
-无
-
-</br>
-
-## 2.2. 取号
-
-
-### 2.2.1. 方法描述
-
-**功能**
-
-本方法用于发起取号请求，并返回用户当前网络环境是否具备取号条件。SDK将在后台完成网络判断、数据网络切换等内部操作并向网关请求申请获取用户本机号码。取号请求成功后，开发者就可以调用并弹出由开发者自定义布局的授权页面。
-
-
-**原型**
-
-```objective-c
-+ (void)getPhoneumberWithTimeout:(NSTimeInterval)duration completion:(void (^)(NSDictionary * sender))completion;
-```
-</br>
-
-### 2.2.2. 参数说明
-
-**请求参数**
-
-| 参数       | 类型           | 说明                                    |
-| ---------- | -------------- | --------------------------------------- |
-| duration   | NSTimeInterval | 自定义取号超时时间（默认8000毫秒），单位：毫秒 |
-| completion | Block  | 取号回调                                |
-
-**响应参数**
-
-| 参数          | 类型     | 说明                          |
-| ------------- | -------- | ----------------------------- |
-| resultCode    | NSString | 返回相应的结果码              |
-| desc          | NSString | 调用描述                      |
-| securityphone | NSString | 手机号码掩码，如“138XXXX0000” |
-
-</br>
-
-### 2.2.3. 示例
-
-**请求示例代码**
-
-```objective-c
- [TYRZSDK getPhoneNumberWithTimeout: 8000 completion: ^ (NSDictionary * _Nonnull sender) {
-        if ([sender[@ "resultCode"] isEqualToString: @"103000"]) {
-            NSLog(@ "取号成功:%@", sender);
-        } else {
-            NSLog(@ "取号失败:%@", sender);
-        }
-    }];
-```
-
-</br>
-
-**响应示例代码**
-
-```
-{
-    resultCode = 103000;
-    desc = "success";
-    securityphone = "138XXXX0000"
-}
-```
-
-</br>
-
-## 2.3. 授权登录
-
-### 2.3.1. 方法描述
-
-**功能**
-
-本方法用于实现：
-
-1. 创建加载SDK内部提供的UAAuthViewController空白模板控制器（或继承UAAuthViewController来创建登录页控制器）
-2. 用户点击登录授权后返回取号凭证等参数
-</br>
-
-**原型**
-
-```objective-c
-+ (void)getAuthorizationWithAuthViewController:(UAAuthViewController *_Nullable)authVC completion:(void (^)(NSDictionary *sender))completion;
-```
-</br>
-
-### 2.3.2. 参数说明
-
-**请求参数**
-
-| 参数     | 类型                 | 说明                                                         |
-| -------- | -------------------- | ------------------------------------------------------------ |
-| authVC   | UAAuthViewController | 授权页面，由开发者完成页面的设计布局。**当authVC传值为nil时，将不弹出授权页，登录方式为隐式登录** |
-| complete | Block        | 登录回调                                                     |
-
-</br>
-
-**响应参数**
-
-| 参数       | 类型     | 说明                                                         | 是否必填   |
-| ---------- | -------- | ------------------------------------------------------------ | ---------- |
-| resultCode | NSString | 返回相应的结果码                                             | 是         |
-| token      | NSString | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
-| openId     | NSString | 成功时返回：用户身份唯一标识 （隐式登录不返回openId字段）        | 成功时必填 |
-| desc       | NSString | 调用描述                                                     | 否         |
-
-</br>
-
-### 2.3.3. 示例
-
-**请求示例代码**
-
-```objective-c
- UAAuthViewController * authVC = [[UAAuthViewController alloc]init];
-    [TYRZSDK getAuthorizationWithAuthViewController:authVC completion:^(NSDictionary * _Nonnull sender) {
-        NSLog(@"授权登录结果:%@",sender);
-    }];
-```
-
-</br>
-
-**响应示例代码**
-
-```
-{
-    openId = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
-    resultCode = 103000;
-    token = 84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9;
-}
 ```
 
 </br>
