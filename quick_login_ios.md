@@ -244,6 +244,7 @@ sdk技术问题沟通QQ群：609994083</br>
 ## 2.5. 显式登录
 </br>
 **示例代码：继承UAAuthViewController创建控制器**
+
 ```objective-c
 // 1、在登录场景里创建一键登录授权页控制器
 CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
@@ -251,12 +252,12 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 
 
 // CustomAuthViewController是继承UAAuthViewController的子类
-@interface CustomAuthViewController : UAAuthViewController
+// @interface CustomAuthViewController : UAAuthViewController
 
-@end
+// @end
 
 
-@implementation CustomAuthViewController
+// @implementation CustomAuthViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -298,7 +299,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
     }];
 }
 
-@end
+//@end
 
 ```
 </br>
