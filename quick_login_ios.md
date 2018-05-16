@@ -29,7 +29,19 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ### 1.2.2. 统一认证登录集成步骤
 
-**第一步：**
+**接入流程**
+
+1、根据《开发者接入流程文档》，在开发者社区（dev.1086.cn)申请并创建应用，获取appid、appkey，申请相关能力，填写应用相关资料等；
+
+2、将需要测试或上线的应用appid提供给移动认证产品接口人，我方将应用appid添加到白名单；
+
+3、白名单配置完成后，应用方进行SDK联调测试；
+
+4、上线前，将应用使用的授权页面提供给移动认证产品接口人，审核无误后可正式上线。
+
+**开发流程**
+
+**第一步**：
 
 在`appDelegate.m`中的`didFinish`函数中添加初始化代码。初始化代码只需要执行一次就可以。
 
@@ -43,8 +55,11 @@ sdk技术问题沟通QQ群：609994083</br>
 
 **第二步：**
 
-1、继承UAAuthViewController类并创建其子类控制器，进行授权页面设计布局和提供动画效果。</br>
-2、调用取号接口获取手机号码掩码成功后，可调用授权接口获取token及openId。
+1、继承UAAuthViewController类并创建其子类控制器，进行授权页面设计布局和提供动画效果；
+
+2、调用取号接口获取手机号码掩码；
+
+3、取号成功后，调用授权登录接口获取token及openId。
 
 <div STYLE="page-break-after: always;"></div>
 
@@ -139,9 +154,9 @@ sdk技术问题沟通QQ群：609994083</br>
 
 ```
 {
-    resultCode = 103000;
-    desc = "success";
-    securityphone = "138XXXX0000"
+    "resultCode" = "103000";
+    "desc" = "success";
+    "securityphone" = "138XXXX0000"
 }
 ```
 
@@ -250,12 +265,12 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 
 **响应示例代码**
 
-```objective-c
+```
 {
-    openId = 003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE;
-    resultCode = 103000;
-    desc = 
-    token = 84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9;
+    "openId" = "003JI1Jg1rmApSg6yG0ydUgLWZ4Bnx0rb4wtWLtyDRc0WAWoAUmE";
+    "resultCode" = "103000";
+    "desc" = ""
+    "token" = "84840100013202003A4E45564452444D794E7A6C474E45557A4F4441314D304E4340687474703A2F2F3132302E3139372E3233352E32373A383038302F72732F403032030004030DF69E040012383030313230313730383137313031343230FF0020C8C9629B915C41DC3C9528E5D5796BB1551F2A49F8FCF7B5BA23ED0F28A8FAE9";
 }
 ```
 </br>
@@ -304,6 +319,10 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 3、需要用户明确知悉使用本机号码作为登录账号。如果应用通过取号方法`getAuthorizationWithAuthViewController`获得手机号码掩码，并且将掩码显著的显示在授权页面上，授权页面可以不显示“本机号码”等文字，否则，必须应用必须在页面显著的位置告知用户正在使用“本机号码”作为账号登录或注册；
 
 4、必须在页面上显示移动认证协议条款名称“《中国移动认证服务条款》”，并且点击该条款时，能链接到移动认证服务条款页面地址 `http://wap.cmpassport.com/resources/html/contract.html`
+
+5、应用在上线前应当将授权页面提供给能力提供方审核（直接联系产品接口人），审核通过后才允许正式上线一键登录能力。如果发现应用未按页面规范设计，并且无整改意愿，能力提供方将有权将一键登录能力做下线处理。
+
+6、应用后续升级上架时，如果授权页面有较大改动，需要再次将授权页面提供给能力提供方审核，审核通过后才允许正式上线一键登录能力。
 
 # 3. 平台接口说明
 
@@ -364,13 +383,13 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 ```
 {
-    appid = 3000******76;
-    msgid = 335e06a28f064b999d6a25e403991e4c;
-    sign = 213EF8D0CC71548945A83166575DFA68;
-    strictcheck = 0;
-    systemtime = 20180129112955435;
-    token = STsid0000001517196594066OHmZvPMBwn2MkFxwvWkV12JixwuZuyDU;
-    version = "2.0";
+    "appid" = "3000******76";
+    "msgid" = "335e06a28f064b999d6a25e403991e4c";
+    "sign" = "213EF8D0CC71548945A83166575DFA68";
+    "strictcheck" = "0";
+    "systemtime" = "20180129112955435";
+    "token" = "STsid0000001517196594066OHmZvPMBwn2MkFxwvWkV12JixwuZuyDU";
+    "version" = "2.0";
 }
 ```
 
@@ -378,10 +397,10 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 ```
 {
-    inresponseto = 335e06a28f064b999d6a25e403991e4c;
-    msisdn = 14700000000;
-    resultCode = 103000;
-    systemtime = 20180129112955477;
+    "inresponseto" = "335e06a28f064b999d6a25e403991e4c";
+    "msisdn" = "14700000000";
+    "resultCode" = "103000";
+    "systemtime" = "20180129112955477";
 }
 ```
 
