@@ -316,7 +316,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 
 2、登录按钮文字描述必须包含“登录”或“注册”等文字，不得诱导用户授权；
 
-3、需要用户明确知悉使用本机号码作为登录账号。如果应用通过取号方法`getAuthorizationWithAuthViewController`获得手机号码掩码，并且将掩码显著的显示在授权页面上，授权页面可以不显示“本机号码”等文字，否则，必须应用必须在页面显著的位置告知用户正在使用“本机号码”作为账号登录或注册；
+3、需要用户明确知悉使用本机号码作为登录账号。如果应用通过取号方法`getPhoneNumberWithTimeout:completion:`获得手机号码掩码，并且将掩码显著的显示在授权页面上，授权页面可以不显示“本机号码”等文字，否则，必须应用必须在页面显著的位置告知用户正在使用“本机号码”作为账号登录或注册；
 
 4、必须在页面上显示移动认证协议条款名称“《中国移动认证服务条款》”，并且点击该条款时，能链接到移动认证服务条款页面地址 `http://wap.cmpassport.com/resources/html/contract.html`
 
