@@ -80,7 +80,7 @@ sdk技术问题沟通QQ群：609994083</br>
 整体流程为：
 
 1. 开发者调用取号方法，取号成功后，SDK将缓存取号临时凭证scrip。
-2. 开发者继承UAAuthViewController的子类并创建授权页面控制器。
+2. 开发者继承UAAuthViewController父类并创建授权页面控制器子类。
 3. 用户同意应用获取本机号码，调用授权登录方法，获取接口调用凭证token。
 4. 携带token进行接口调用，获取用户的手机号码信息。
 
@@ -951,6 +951,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 | 200039   | 电信取号接口返回失败                               |
 | 200040   | UI资源加载异常                                     |
 | 200041   | 应用未授权（未勾选能力）                           |
+| 200042   | 授权页弹出异常                                     |
 | 200047   | 网络异常                                           |
 | 200048   | 用户未安装sim卡                                    |
 | 105302   | AppId不在白名单                                    |
