@@ -261,7 +261,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 
 
 
-##2.6. 获取手机号码
+##2.6. 获取手机号码（服务端）
 
 开发者获取token后，需要将token传递到应用服务器，由应用服务器发起获取用户手机号接口的调用。
 
@@ -448,7 +448,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 
 开发者在本机号码校验的使用场景（页面），引导提示用户输入本机号码，将手机号码和3.4中获取的接口凭证token传回应用服务器。
 
-## 3.6. 本机号码校验
+## 3.6. 本机号码校验（服务端）
 
 开发者获取token后，需要将token传递到应用服务器，由应用服务器发起本机号码校验接口的调用。
 
@@ -966,6 +966,7 @@ CustomAuthViewController *authVC = [[CustomAuthViewController alloc]init];
 | ------ | --------------------------------------------------------- |
 | 103000 | 返回成功                                                  |
 | 103101 | 签名错误                                                  |
+| 103102 | 包名/包签名/bundle ID错误                                 |
 | 103106 | 输入手机号不合法（短验）                                  |
 | 103107 | 已存在相同的随机数（短验）                                |
 | 103108 | 短信验证码错误                                            |
